@@ -2,7 +2,7 @@
 
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const { uuidv4 } = require('uuidv4');
+const { uuid } = require('uuidv4');
 const sha256 = require('sha256');
 const jsonParser = require('body-parser').json();
 const router = express.Router();
@@ -76,10 +76,10 @@ router.post('/join', async (req, res, next) => {
   const { username, name, email, password, gender } = req.body;
   try {
     if (await User.findOne({ where: { username } })) {
-      return res.status(HTTP_STATUS_CODE.NO_CONTENT).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
+      return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
     };
     if (await User.findOne({ where: { email } })) {
-      return res.status(HTTP_STATUS_CODE.NO_CONTENT).json({ error: DB_STATUS_CODE.EMAIL_ALREADY_OCCUPIED });
+      return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.EMAIL_ALREADY_OCCUPIED });
     };
     const user = await User.create({
       username,
@@ -91,7 +91,7 @@ router.post('/join', async (req, res, next) => {
     const token = jwt.sign({ username }, process.env.JWT_SECRET, {
       expiresIn: tokenExpireTime
     });
-    const refresh_token = sha256(uuidv4());
+    const refresh_token = sha256(uuid());
     await RefreshToken.create({ value: refresh_token, userId: user.id });
 
     return res.status(HTTP_STATUS_CODE.CREATED).json({ token, refresh_token, error: DB_STATUS_CODE.OK });

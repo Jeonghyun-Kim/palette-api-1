@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./server",
-    "test": "nodemon ./server"
+    "test": "node ./server"
   },
   "author": "Kay Kim (kimjh@bawi.org || https://github.com/Jeonghyun-Kim)",
   "license": "MIT",
