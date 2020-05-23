@@ -2,7 +2,7 @@
 
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const uuidv4 = require('uuid-v4');
+const { uuidv4 } = require('uuidv4');
 const sha256 = require('sha256');
 const jsonParser = require('body-parser').json();
 const router = express.Router();

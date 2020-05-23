@@ -21,7 +21,7 @@
     "mysql2": "^2.1.0",
     "sequelize": "^5.21.10",
     "sha256": "^0.2.0",
-    "uuid-v4": "^0.1.0",
+    "uuidv4": "^6.0.9",
     "winston": "^3.2.1"
   },
   "devDependencies": {
