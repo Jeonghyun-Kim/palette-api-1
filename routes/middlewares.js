@@ -1,7 +1,7 @@
 "use strict";
 
 const jwt = require('jsonwebtoken');
-const logger = require('../winston_config');
+const logger = require('../config/winston_config');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
 const verifyToken = (req, res, next) => {
