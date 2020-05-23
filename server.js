@@ -30,6 +30,7 @@ app.use('/', indexRouter);
 app.all('*', (req, res, next) => {
   const error = new Error('404 NOT FOUND');
   error.status = 404;
+
   return next(error);
 });
 
@@ -37,7 +38,7 @@ app.use((err, req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
     res.status(err.status || 500).json({ error: `An Error Occured.`})
   } else {
-    logger.error(err);
+    logger.error(`[FINAL] ${err}`);
     res.status(err.status || 500).json({ error: err.message, stack: err.stack });
   };
 });

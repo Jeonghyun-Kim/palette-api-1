@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const logger = require('../config/winston_config');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
+const { User } = require('../models');
+
+// VERIFY ACCESS_TOKEN
 const verifyToken = (req, res, next) => {
   try {
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
@@ -16,7 +19,23 @@ const verifyToken = (req, res, next) => {
   };
 };
 
+// CHECK ADMIN
+const checkAdmin = async (req, res, next) => {
+  try {
+    const adminUser = await User.findOne({ where: { username: req.decoded.username } });
+    if (adminUser.level < 99) {
+      res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
+    } else {
+      return next();
+    }
+  } catch (error) {
+    logger.error(`[CHECK ADMIN] ${error}`);
+
+    return next(error);
+  }
+};
 
 module.exports = {
-  verifyToken
+  verifyToken,
+  checkAdmin
 };

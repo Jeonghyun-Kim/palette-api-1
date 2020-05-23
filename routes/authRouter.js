@@ -36,7 +36,9 @@ router.post('/login', async (req, res, next) => {
       return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.PASSWORD_WRONG });
     };
   } catch (error) {
-    
+    logger.error(`[/login] ${error}`);
+
+    return next(error);
   }
 });
 
@@ -65,7 +67,7 @@ router.post('/join', async (req, res, next) => {
 
     return res.status(HTTP_STATUS_CODE.CREATED).json({ token, refresh_token, error: DB_STATUS_CODE.OK });
   } catch (error) {
-    logger.error(`joinError: ${error}`);
+    logger.error(`[/join] ${error}`);
 
     return next(error);
   };
