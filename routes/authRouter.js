@@ -122,9 +122,10 @@ router.post('/token', async (req, res, next) => {
   };
   try {
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    logger.info(`passed!`)
     const user = await User.findOne({ attributes: ['id', 'username'], where: { username: req.decoded.username } });
     const token = await checkRefreshToken(user, refresh_token);
-    if (token === null) {
+    if (!token) {
       return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
     }
 
