@@ -14,7 +14,7 @@ const { User } = require('../models');
 */
 const verifyToken = (req, res, next) => {
   try {
-    req.username = jwt.verify(req.headers.authorization, process.env.JWT_SECRET).username;
+    req.id = jwt.verify(req.headers.authorization, process.env.JWT_SECRET).id;
     return next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
@@ -31,7 +31,7 @@ const verifyToken = (req, res, next) => {
 */
 const checkAdmin = async (req, res, next) => {
   try {
-    const adminUser = await User.findOne({ where: { username: req.username } });
+    const adminUser = await User.findOne({ where: { id: req.id } });
     if (adminUser.level < 99) {
       res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
     } else {

@@ -30,7 +30,7 @@ const checkRefreshToken = async (user, refresh_token) => {
     return null;
   };
   const token = jwt.sign({
-    username: user.username
+    id: user.id
   }, process.env.JWT_SECRET, {
     expiresIn: tokenExpireTime
   });
@@ -51,7 +51,7 @@ router.post('/login', async (req, res, next) => {
       return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
     };
     if (exUser.password === sha256(password)) {
-      const token = jwt.sign({ username: exUser.username }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ id: exUser.id }, process.env.JWT_SECRET, {
         expiresIn: tokenExpireTime
       });
       const refresh_token = (await exUser.getRefreshToken()).value;
@@ -88,7 +88,7 @@ router.post('/join', async (req, res, next) => {
       password: sha256(password),
       gender
     });
-    const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: tokenExpireTime
     });
     const refresh_token = sha256(uuid());
@@ -122,8 +122,8 @@ router.post('/token', async (req, res, next) => {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   };
   try {
-    const { username } = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
-    const user = await User.findOne({ attributes: ['id', 'username'], where: { username } });
+    const { id } = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    const user = await User.findOne({ attributes: ['id'], where: { id } });
     const token = await checkRefreshToken(user, refresh_token);
     if (!token) {
       return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
@@ -132,7 +132,7 @@ router.post('/token', async (req, res, next) => {
     return res.status(HTTP_STATUS_CODE.OK).json({ token, error: DB_STATUS_CODE.OK });
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      const user = await User.findOne({ attributes: ['id', 'username'], where: { username: jwt.decode(req.headers.authorization).username } });
+      const user = await User.findOne({ attributes: ['id'], where: { id: jwt.decode(req.headers.authorization).id } });
       const token = await checkRefreshToken(user, refresh_token);
       if (token === null) {
         return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
