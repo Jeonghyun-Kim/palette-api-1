@@ -121,8 +121,8 @@ router.post('/token', async (req, res, next) => {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   };
   try {
-    req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
-    const user = await User.findOne({ attributes: ['id', 'username'], where: { username: req.decoded.username } });
+    const { username } = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    const user = await User.findOne({ attributes: ['id', 'username'], where: { username } });
     const token = await checkRefreshToken(user, refresh_token);
     if (!token) {
       return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });

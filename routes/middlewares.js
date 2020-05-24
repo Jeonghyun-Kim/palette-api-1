@@ -1,5 +1,7 @@
 "use strict";
 
+// TODO: add middleware that decrypt req's json (with client_secret)
+
 const jwt = require('jsonwebtoken');
 const logger = require('../config/winston_config');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
@@ -12,7 +14,7 @@ const { User } = require('../models');
 */
 const verifyToken = (req, res, next) => {
   try {
-    req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    req.username = jwt.verify(req.headers.authorization, process.env.JWT_SECRET).username;
     return next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
@@ -29,7 +31,7 @@ const verifyToken = (req, res, next) => {
 */
 const checkAdmin = async (req, res, next) => {
   try {
-    const adminUser = await User.findOne({ where: { username: req.decoded.username } });
+    const adminUser = await User.findOne({ where: { username: req.username } });
     if (adminUser.level < 99) {
       res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
     } else {
