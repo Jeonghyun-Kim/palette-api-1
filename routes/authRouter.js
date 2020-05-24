@@ -38,7 +38,7 @@ const checkRefreshToken = async (user, refresh_token) => {
   return token;
 };
 
-// TODO: INPUT VALIDATION
+// TODO: INPUT VALIDATION // PUBLIC KEY HASHING
 /*  SIGN IN
     req.body: { username, password }
     res.json: { token: access_token, refresh_token, error: 0 }
@@ -67,7 +67,7 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-// TODO: INPUT VALIDATION
+// TODO: INPUT VALIDATION // PUBLIC KEY HASHING
 /*  SIGN UP
     req.body: { username, name, email, password, gender }
     res.json: { token: access_token, refresh_token, error: 0 }
@@ -110,6 +110,7 @@ router.get('/test', verifyToken, (req, res) => {
   res.status(HTTP_STATUS_CODE.OK).json({ error: DB_STATUS_CODE.OK });
 });
 
+// TODO: move refresh_token to header --> use GET method instead
 /*  RESPONSE WITH NEW TOKEN 
     req.headers.authorization: 'access_token'
     req.body: { refresh_token }

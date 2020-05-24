@@ -1,6 +1,6 @@
 "use strict";
 
-// TODO: add middleware that decrypt req's json (with client_secret)
+// TODO: add middleware that decrypt req's body (with client_secret) or not?
 
 const jwt = require('jsonwebtoken');
 const logger = require('../config/winston_config');
