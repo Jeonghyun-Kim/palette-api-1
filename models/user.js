@@ -27,16 +27,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('null', 'male', 'female'),
       allowNull: false
     },
-    num_fans: {
+    numFans: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0
     },
-    profile_pic_src: {
+    profileSrc: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    profile_msg: {
+    profileMsg: {
       type: DataTypes.STRING(64),
       allowNull: true,
     }
