@@ -24,8 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     gender: {
-      type: DataTypes.ENUM('null', 'male', 'female'),
-      allowNull: false
+      type: DataTypes.ENUM('secret', 'male', 'female'),
+      allowNull: false,
+      defaultValue: 'secret'
     },
     numFans: {
       type: DataTypes.INTEGER.UNSIGNED,

@@ -17,6 +17,22 @@ router.get('/', (req, res) => {
   res.status(HTTP_STATUS_CODE.OK).json({ version, error: DB_STATUS_CODE.OK });
 });
 
+router.get('/user/my', verifyToken, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      attributes:['username', 'name', 'email', 'gender', 'numFans', 'profileSrc', 'profileMsg'],
+      where: { id: req.id }
+    });
+    // const paintings = await user.getPaintings();
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ user, error: DB_STATUS_CODE.OK });
+  } catch (error) {
+    logger.error(`[/user/my] ${error}`);
+
+    return next(error);
+  }
+});
+
 router.post('/painting', verifyToken, async (req, res, next) => {
   const fileName = sha256(uuid());
   const upload = getMulterS3(fileName, BUCKETS.PAINTING);

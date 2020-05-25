@@ -86,7 +86,7 @@ router.post('/join', async (req, res, next) => {
       name,
       email,
       password: sha256(password),
-      gender
+      gender: gender ? gender : 'secret'
     });
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: tokenExpireTime

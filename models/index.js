@@ -17,7 +17,7 @@ db.Painting = require('./painting')(sequelize, Sequelize);
 /* CONFIGURE DB ASSOCIATIONS HERE */
 db.User.hasOne(db.RefreshToken);
 
-db.User.hasMany(db.Painting, { foreignKey: 'owner_id' });
+db.User.hasMany(db.Painting, { foreignKey: 'ownerId', sourceKey: 'id' });
 
 db.User.belongsToMany(db.Painting, { as: 'LikedPaintings', through: 'UserLikePainting', foreignKey: 'userId' });
 db.Painting.belongsToMany(db.User, { as: 'LikedUsers', through: 'UserLikePainting', foreignKey: 'paintingId'});
