@@ -48,7 +48,7 @@ router.post('/painting', verifyToken, upload.single('painting'), async (req, res
     const painting = await Painting.create({
       painter, name, description, material, width, height, price, onSale,
       ownerId: req.id,
-      src: fileName
+      src: fileName + extension
     });
     const fileStream = streamifier.createReadStream(req.file.buffer);
     s3.upload({
@@ -73,7 +73,6 @@ router.post('/painting', verifyToken, upload.single('painting'), async (req, res
 
     return next(error);
   };
-  res.status(200).json({error: 0})
 });
 
 module.exports = router;
