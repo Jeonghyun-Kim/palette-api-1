@@ -25,12 +25,18 @@ router.get('/', (req, res) => {
 router.get('/user/my', verifyToken, async (req, res, next) => {
   try {
     const user = await User.findOne({
-      attributes:['username', 'name', 'email', 'gender', 'numFans', 'profileSrc', 'profileMsg'],
+      attributes:['id', 'username', 'name', 'email', 'gender',
+        'numFans', 'profileSrc', 'profileMsg'],
       where: { id: req.id }
     });
-    // const paintings = await user.getPaintings();
+    const paintings = await user.getPaintings({
+      attributes: ['painter', 'name', 'description', 'material', 'width',
+        'height', 'price', 'onSale', 'numLikes', 'src']
+    });
 
-    return res.status(HTTP_STATUS_CODE.OK).json({ user, error: DB_STATUS_CODE.OK });
+    delete user.id;
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ user, paintings, error: DB_STATUS_CODE.OK });
   } catch (error) {
     logger.error(`[/user/my] ${error}`);
 

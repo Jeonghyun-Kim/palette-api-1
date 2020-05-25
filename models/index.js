@@ -15,9 +15,9 @@ db.RefreshToken = require('./refreshToken')(sequelize, Sequelize);
 db.Painting = require('./painting')(sequelize, Sequelize);
 
 /* CONFIGURE DB ASSOCIATIONS HERE */
-db.User.hasOne(db.RefreshToken);
+db.User.hasOne(db.RefreshToken, { onDelete: 'cascade' });
 
-db.User.hasMany(db.Painting, { foreignKey: 'ownerId', sourceKey: 'id' });
+db.User.hasMany(db.Painting, { foreignKey: 'ownerId', onDelete: 'cascade' });
 
 db.User.belongsToMany(db.Painting, { as: 'LikedPaintings', through: 'UserLikePainting', foreignKey: 'userId' });
 db.Painting.belongsToMany(db.User, { as: 'LikedUsers', through: 'UserLikePainting', foreignKey: 'paintingId'});
