@@ -13,7 +13,7 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
 const { User, RefreshToken } = require('../models');
 
-const tokenExpireTime = '1h';
+const tokenExpireTime = '5m';
 
 router.use(jsonParser);
 
