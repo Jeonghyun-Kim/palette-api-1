@@ -7,11 +7,10 @@ const sha256 = require('sha256');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-const streamifier = require('streamifier');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const logger = require('../config/winston_config');
-const { User, Painting } = require('../models');
+const { User, Painting, Image } = require('../models');
 const { verifyToken } = require('./middlewares');
 const { s3, BUCKETS } = require('./aws_defines');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
@@ -38,44 +37,48 @@ router.get('/user/my', verifyToken, async (req, res, next) => {
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user, paintings, error: DB_STATUS_CODE.OK });
   } catch (error) {
-    logger.error(`[/user/my] ${error}`);
+    logger.error(`[DB] ${error}`);
 
     return next(error);
   };
 });
 
-router.post('/painting', verifyToken, upload.single('painting'), async (req, res, next) => {
-  const fileName = sha256(uuid());
+router.post('/painting', verifyToken, upload.array('paintings', 10), async (req, res, next) => {
   const { painter, name, description, material, width, height, price, onSale } = req.body;
   // TODO: Input Validation
-  const extension = path.extname(req.file.originalname);
-  logger.info(`FILENAME: ${fileName}${extension}`);
   try {
     const painting = await Painting.create({
       painter, name, description, material, width, height, price, onSale,
-      ownerId: req.id,
-      src: fileName + extension
+      ownerId: req.id
     });
-    const fileStream = streamifier.createReadStream(req.file.buffer);
-    s3.upload({
-      Bucket: BUCKETS.PAINTING,
-      Key: fileName + extension,
-      Body: fileStream,
-      ACL: 'public-read'
-    }, async (err, data) => {
-      if (err) {
-        logger.error(`[AWS UPLOAD PAINTING] ${err}`);
-        await Painting.destroy({ where: { id: painting.id } });
+  
+    req.files.forEach(async (element) => {
+      const fileName = sha256(uuid());
+      const extension = path.extname(element.originalname);
+      
+      await Image.create({
+        url: fileName + extension,
+        paintingId: painting.id
+      });
 
-        return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
-      } if (data) {
-        logger.info(`[PAINTING UPLOADED SUCCESSFULLY]`);
+      s3.upload({
+        Bucket: BUCKETS.PAINTING,
+        Key: fileName + extension,
+        Body: element.buffer,
+        ACL: 'public-read'
+      }, async (err, data) => {
+        if (err) {
+          logger.error(`[AWS] ${err}`);
+          await Painting.destroy({ where: { id: painting.id } });
 
-        return res.status(HTTP_STATUS_CODE.CREATED).json({ error: DB_STATUS_CODE.OK });
-      }
-    })
+          return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
+        };
+      });
+    });
+
+    return res.status(HTTP_STATUS_CODE.CREATED).json({ error: DB_STATUS_CODE.OK });
   } catch (error) {
-    logger.error(`[POST /painting] ${error}`);
+    logger.error(`[DB] ${error}`);
 
     return next(error);
   };
