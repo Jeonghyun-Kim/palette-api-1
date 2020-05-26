@@ -73,7 +73,7 @@ router.get('/painting/:id', verifyToken, async (req, res, next) => {
     const owner = await User.findOne({
       attributes:['id', 'username', 'name', 'email', 'gender',
         'numFans', 'profileSrc', 'profileMsg'],
-      where: { id: req.id }
+      where: { id: painting.ownerId }
     })
     delete painting.ownerId;
     const images = await painting.getImages({ attributes: ['id', 'url'] });
