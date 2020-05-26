@@ -30,7 +30,7 @@ router.get('/my', verifyToken, async (req, res, next) => {
     });
     const paintings = await user.getPaintings({
       attributes: ['id', 'painter', 'name', 'description', 'material',
-        'width', 'height', 'price', 'onSale', 'numLikes']
+        'width', 'height', 'price', 'onSale', 'numLikes', 'thumbnailUrl']
     });
 
     delete user.id;
@@ -52,7 +52,7 @@ router.get('/user/:id', verifyToken, async (req, res, next) => {
     });
     const paintings = await user.getPaintings({
       attributes: ['id', 'painter', 'name', 'description', 'material',
-        'width', 'height', 'price', 'onSale', 'numLikes']
+        'width', 'height', 'price', 'onSale', 'numLikes', 'thumbnailUrl']
     });
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user, paintings, error: DB_STATUS_CODE.OK });
