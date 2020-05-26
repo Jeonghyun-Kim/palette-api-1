@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
   res.status(HTTP_STATUS_CODE.OK).json({ version, error: DB_STATUS_CODE.OK });
 });
 
-router.get('/user/my', verifyToken, async (req, res, next) => {
+router.get('/my', verifyToken, async (req, res, next) => {
   try {
     const user = await User.findOne({
       attributes:['id', 'username', 'name', 'email', 'gender',
@@ -29,8 +29,8 @@ router.get('/user/my', verifyToken, async (req, res, next) => {
       where: { id: req.id }
     });
     const paintings = await user.getPaintings({
-      attributes: ['painter', 'name', 'description', 'material', 'width',
-        'height', 'price', 'onSale', 'numLikes', 'src']
+      attributes: ['id', 'painter', 'name', 'description', 'material',
+        'width', 'height', 'price', 'onSale', 'numLikes']
     });
 
     delete user.id;
@@ -42,6 +42,29 @@ router.get('/user/my', verifyToken, async (req, res, next) => {
     return next(error);
   };
 });
+
+router.get('/painting/:id', verifyToken, async (req, res, next) => {
+  try {
+    const painting = await Painting.findOne({
+      attributes: ['id', 'painter', 'name', 'description', 'material',
+        'width', 'height', 'price', 'onSale', 'numLikes', 'ownerId'],
+      where: { id: req.params.id }
+    });
+    const owner = await User.findOne({
+      attributes:['id', 'username', 'name', 'email', 'gender',
+        'numFans', 'profileSrc', 'profileMsg'],
+      where: { id: req.id }
+    })
+    delete painting.ownerId;
+    const images = await painting.getImages({ attributes: ['id', 'url'] });
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ painting, owner, images, error: DB_STATUS_CODE.OK });
+  } catch (error) {
+    logger.error(`[DB] ${error}`);
+
+    return next(error);
+  }
+})
 
 router.post('/painting', verifyToken, upload.array('paintings', 10), async (req, res, next) => {
   const { painter, name, description, material, width, height, price, onSale } = req.body;
@@ -55,7 +78,7 @@ router.post('/painting', verifyToken, upload.array('paintings', 10), async (req,
     req.files.forEach(async (element) => {
       const fileName = sha256(uuid());
       const extension = path.extname(element.originalname);
-      
+
       await Image.create({
         url: fileName + extension,
         paintingId: painting.id
