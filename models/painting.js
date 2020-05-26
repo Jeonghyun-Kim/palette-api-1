@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0
+    },
+    thumbnailUrl: {
+      type: DataTypes.STRING(70),
+      allowNull: false
     }
   }, {
     timestamps: true,
