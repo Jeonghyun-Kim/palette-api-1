@@ -95,7 +95,8 @@ router.post('/painting', verifyToken, upload.array('paintings', 10), async (req,
       painter, name, description, material, width,
       height, price, onSale,
       ownerId: req.id,
-      thumbnailUrl: thumbnailName
+      thumbnailUrl: thumbnailName,
+      numImages: req.files.length
     });
 
     const thumbnail = await imageThumbnail(req.files[0].buffer, { percentage: THUMBNAIL_PERCENTAGE });
