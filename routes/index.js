@@ -50,6 +50,9 @@ router.get('/user/:id', verifyToken, async (req, res, next) => {
         'numFans', 'profileSrc', 'profileMsg'],
       where: { id: req.params.id }
     });
+    if (user === null) {
+      res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
+    };
     const paintings = await user.getPaintings({
       attributes: ['id', 'painter', 'name', 'description', 'material',
         'width', 'height', 'price', 'onSale', 'numLikes', 'thumbnailUrl']
@@ -70,6 +73,9 @@ router.get('/painting/:id', verifyToken, async (req, res, next) => {
         'width', 'height', 'price', 'onSale', 'numLikes', 'ownerId'],
       where: { id: req.params.id }
     });
+    if (painting === null) {
+      return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_PAINTING });
+    };
     const owner = await User.findOne({
       attributes:['id', 'username', 'name', 'email', 'gender',
         'numFans', 'profileSrc', 'profileMsg'],
