@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { uuid } = require('uuidv4');
@@ -9,6 +7,7 @@ const router = express.Router();
 
 const logger = require('../config/winston_config');
 const { verifyToken } = require('./middlewares');
+const { transporter, mailConfig } = require('./mailer');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
 const { User, RefreshToken } = require('../models');
@@ -88,6 +87,32 @@ router.post('/join', async (req, res, next) => {
       password: sha256(password),
       gender: gender ? gender : 'secret'
     });
+
+    const emailToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: mailConfig.mailer.expiresIn,
+    });
+
+    const mailOptions = {
+      from: mailConfig.mailer.user,
+      to: email,
+      subject: 'Verification Email',
+      html: `
+      <a href="http://localhost:8081/auth/verify/${emailToken}" target="_blank")">
+        Click Me
+      </a>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        logger.error(`[Mailer] ${error}`);
+    
+        return next(error);
+      } else {
+        logger.info(`[Mailer] ${info.response}`);
+      };
+    });
+
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: tokenExpireTime
     });
@@ -99,6 +124,23 @@ router.post('/join', async (req, res, next) => {
     logger.error(`[/join] ${error}`);
 
     return next(error);
+  };
+});
+
+router.get('/verify/:token', async (req, res, next) => {
+  try {
+    req.id = jwt.verify(req.params.token, process.env.JWT_SECRET).id;
+    const user = await User.findOne({ where: { id: req.id } });
+    user.verified = true;
+    await user.save();
+
+    return res.status(HTTP_STATUS_CODE.OK).send(`성공적으로 인증되었습니다.`);
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json({ error: DB_STATUS_CODE.TOKEN_EXPIRED });
+    };
+
+    return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
   };
 });
 

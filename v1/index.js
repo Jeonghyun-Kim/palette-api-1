@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const router = express.Router();
 const { uuid } = require('uuidv4');
@@ -115,7 +113,7 @@ router.post('/painting', verifyToken, upload.array('paintings', 10), async (req,
     }, async (err, data) => {
       if (err) {
         logger.error(`[AWS] ${err}`);
-        await Painting.destroy({ where: { id: painting.id } });
+        await painting.destroy();
   
         return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
       };
@@ -137,7 +135,7 @@ router.post('/painting', verifyToken, upload.array('paintings', 10), async (req,
       }, async (err, data) => {
         if (err) {
           logger.error(`[AWS] ${err}`);
-          await Painting.destroy({ where: { id: painting.id } });
+          await painting.destroy();
 
           return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
         };

@@ -1,5 +1,3 @@
-"use strict";
-
 // TODO: add middleware that decrypt req's body (with client_secret) or not?
 
 const jwt = require('jsonwebtoken');
@@ -20,6 +18,7 @@ const verifyToken = (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json({ error: DB_STATUS_CODE.TOKEN_EXPIRED });
     };
+
     return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
   };
 };
@@ -40,7 +39,7 @@ const checkAdmin = async (req, res, next) => {
   } catch (error) {
     logger.error(`[CHECK ADMIN] ${error}`);
 
-    return next(error);
+    return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
   }
 };
 
