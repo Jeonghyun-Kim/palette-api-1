@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
     profileMsg: {
       type: DataTypes.STRING(64),
       allowNull: true,
+    },
+    verified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     }
   }, {
     timestamps: true,

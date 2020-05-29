@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const morgan = require('morgan');
 const CUSTOM = ':remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
@@ -9,8 +7,9 @@ require('dotenv').config();
 
 const { sequelize } = require('./models');
 
-const indexRouter = require('./routes');
-const authRouter = require('./routes/authRouter');
+const indexRouter = require('./v1');
+const authRouter = require('./v1/authRouter');
+const testRouter = require('./v1/testRouter');
 
 const app = express();
 
@@ -24,6 +23,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'));
 };
 
+app.use('/test', testRouter);
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
 
@@ -38,7 +38,7 @@ app.use((err, req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
     res.status(err.status || 500).json({ error: `An Error Occured.`})
   } else {
-    logger.error(`[FINAL] ${err}`);
+    // logger.error(`[FINAL] ${err}`);
     res.status(err.status || 500).json({ error: err.message, stack: err.stack });
   };
 });

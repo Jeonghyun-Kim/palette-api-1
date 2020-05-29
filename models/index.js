@@ -1,5 +1,3 @@
-'use strict';
-
 const Sequelize = require('sequelize');
 
 const config = require('../config/db_config')[process.env.NONE_ENV || 'development'];

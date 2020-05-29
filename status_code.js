@@ -1,5 +1,3 @@
-"use strict";
-
 let DB_STATUS_CODE = {
   COMMON_ERROR: -1,
   OK: 0,
@@ -11,6 +9,7 @@ let DB_STATUS_CODE = {
   NO_SUCH_PAINTING: 21,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
   TOKEN_EXPIRED: 419,
 };
 
