@@ -32,14 +32,14 @@ const checkAdmin = async (req, res, next) => {
   try {
     const adminUser = await User.findOne({ where: { id: req.id } });
     if (adminUser.level < 99) {
-      res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
+      res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
     } else {
       return next();
     }
   } catch (error) {
     logger.error(`[CHECK ADMIN] ${error}`);
 
-    return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
+    return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
   }
 };
 
