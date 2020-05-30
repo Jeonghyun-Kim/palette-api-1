@@ -8,8 +8,6 @@ require('dotenv').config();
 const { sequelize } = require('./models');
 
 const indexRouter = require('./v1');
-const authRouter = require('./v1/authRouter');
-const testRouter = require('./v1/testRouter');
 
 const app = express();
 
@@ -22,9 +20,6 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev'));
 };
-
-app.use('/test', testRouter);
-app.use('/auth', authRouter);
 app.use('/', indexRouter);
 
 app.all('*', (req, res, next) => {

@@ -5,12 +5,12 @@ const sha256 = require('sha256');
 const jsonParser = require('body-parser').json();
 const router = express.Router();
 
-const logger = require('../config/winston_config');
-const { verifyToken } = require('./middlewares');
-const { transporter, mailConfig } = require('./mailer');
-const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
+const logger = require('../../config/winston_config');
+const { verifyToken } = require('../middlewares');
+const { transporter, mailConfig } = require('../mailer');
+const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
-const { User, RefreshToken } = require('../models');
+const { User, RefreshToken } = require('../../models');
 
 const tokenExpireTime = '5m';
 

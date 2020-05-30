@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 const jsonParser = require('body-parser').json();
 const router = express.Router();
 
-const logger = require('../config/winston_config');
-const { verifyToken } = require('./middlewares');
-const { transporter, mailConfing } = require('./mailer');
-const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
+const logger = require('../../config/winston_config');
+const { verifyToken } = require('../middlewares');
+const { transporter, mailConfing } = require('../mailer');
+const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 // const { User, RefreshToken } = require('../models');
 
