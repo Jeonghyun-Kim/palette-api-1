@@ -9,7 +9,7 @@ const imageThumbnail = require('image-thumbnail');
 
 const logger = require('../../config/winston_config');
 const db = require('../../models');
-const { verifyToken } = require('../middlewares');
+const { verifyToken, checkAdmin } = require('../middlewares');
 const { s3, BUCKETS, THUMBNAIL_PERCENTAGE } = require('../aws_defines');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
@@ -58,13 +58,15 @@ router.post('/', verifyToken, upload.array('paintings', 10), async (req, res, ne
       Bucket: BUCKETS.THUMBNAIL,
       Key: thumbnailName,
       Body: thumbnail,
-      ACL: 'public-read'
+      ACL: 'public-read',
     }, async (err, data) => {
       if (err) {
         logger.error(`[AWS] ${err}`);
         await painting.destroy();
   
         return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
+      } else {
+        logger.info(`[AWS] ${data.response}`);
       };
     });
   
@@ -80,18 +82,67 @@ router.post('/', verifyToken, upload.array('paintings', 10), async (req, res, ne
         Bucket: BUCKETS.PAINTING,
         Key: fileName,
         Body: element.buffer,
-        ACL: 'public-read'
+        ACL: 'public-read',
       }, async (err, data) => {
         if (err) {
           logger.error(`[AWS] ${err}`);
           await painting.destroy();
 
           return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
+        } else {
+          logger.info(`[AWS] ${data.response}`);
         };
       });
     });
 
     return res.status(HTTP_STATUS_CODE.CREATED).json({ error: DB_STATUS_CODE.OK });
+  } catch (error) {
+    logger.error(`[DB] ${error}`);
+
+    return next(error);
+  };
+});
+
+router.delete('/:id', verifyToken, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const painting = await db.Painting.findOne({ where: { id } });
+    if (painting.owner !== req.id) {
+      return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
+    };
+    const images = await painting.getImages();
+
+    s3.deleteObject({
+      Bucket: BUCKETS.THUMBNAIL,
+      Key: images.thumbnailUrl,
+    }, (err, data) => {
+      if (err) {
+        logger.error(`[AWS] ${err}`);
+
+        return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
+      } else {
+        logger.info(`[AWS] ${data.response}`);
+      };
+    });
+
+    images.forEach((element) => {
+      s3.deleteObject({
+        Bucket: BUCKETS.PAINTING,
+        Key: images.url,
+      }, (err, data) => {
+        if (err) {
+          logger.error(`[AWS] ${err}`);
+
+          return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.AWS_S3_ERROR });
+        } else {
+          logger.info(`[AWS] ${data.response}`);
+        };
+      });
+    });
+
+    await painting.destroy();
+    
+    return res.status(HTTP_STATUS_CODE.OK).json({ error: DB_STATUS_CODE.OK });
   } catch (error) {
     logger.error(`[DB] ${error}`);
 
