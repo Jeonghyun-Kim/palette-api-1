@@ -104,12 +104,14 @@ router.post('/', verifyToken, upload.array('paintings', 10), async (req, res, ne
 });
 
 router.delete('/:id', verifyToken, async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
+    const user = db.User.findOne({ where: { id: req.id } });
     const painting = await db.Painting.findOne({ where: { id } });
-    if (painting.owner !== req.id) {
+    if ((user.level < 99) && (painting.owner !== req.id)) {
       return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
     };
+    
     const images = await painting.getImages();
 
     s3.deleteObject({
