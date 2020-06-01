@@ -24,21 +24,27 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     gender: {
-      type: DataTypes.ENUM('null', 'male', 'female'),
-      allowNull: false
+      type: DataTypes.ENUM('secret', 'male', 'female'),
+      allowNull: false,
+      defaultValue: 'secret'
     },
-    num_fans: {
+    numFans: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0
     },
-    profile_pic_src: {
+    profileSrc: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    profile_msg: {
+    profileMsg: {
       type: DataTypes.STRING(64),
       allowNull: true,
+    },
+    verified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     }
   }, {
     timestamps: true,

@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('refreshToken', {
-    value: {
-      type: DataTypes.STRING(64),
+  return sequelize.define('image', {
+    url: {
+      type: DataTypes.STRING(70),
       allowNull: false
     }
   }, {

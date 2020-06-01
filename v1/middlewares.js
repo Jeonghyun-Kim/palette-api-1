@@ -1,4 +1,4 @@
-"use strict";
+// TODO: add middleware that decrypt req's body (with client_secret) or not?
 
 const jwt = require('jsonwebtoken');
 const logger = require('../config/winston_config');
@@ -12,12 +12,13 @@ const { User } = require('../models');
 */
 const verifyToken = (req, res, next) => {
   try {
-    req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    req.id = jwt.verify(req.headers.authorization, process.env.JWT_SECRET).id;
     return next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json({ error: DB_STATUS_CODE.TOKEN_EXPIRED });
     };
+
     return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
   };
 };
@@ -29,16 +30,16 @@ const verifyToken = (req, res, next) => {
 */
 const checkAdmin = async (req, res, next) => {
   try {
-    const adminUser = await User.findOne({ where: { username: req.decoded.username } });
+    const adminUser = await User.findOne({ where: { id: req.id } });
     if (adminUser.level < 99) {
-      res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
+      res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
     } else {
       return next();
     }
   } catch (error) {
     logger.error(`[CHECK ADMIN] ${error}`);
 
-    return next(error);
+    return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
   }
 };
 
