@@ -37,6 +37,31 @@ const checkRefreshToken = async (user, refresh_token) => {
   return token;
 };
 
+const sendEmail = (user, cb_on_success, cb_on_fail) => {
+  const emailToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    expiresIn: mailConfig.mailer.expiresIn,
+  });
+
+  const mailOptions = {
+    from: mailConfig.mailer.user,
+    to: user.email,
+    subject: 'Verification Email',
+    html: `
+    <a href="http://localhost:8081/auth/verify/${emailToken}" target="_blank")">
+      Click Me
+    </a>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      cb_on_success();
+    } else {
+      cb_on_fail();
+    };
+  });
+}
+
 // TODO: INPUT VALIDATION // PUBLIC KEY HASHING
 /*  SIGN IN
     req.body: { username, password }
@@ -88,29 +113,12 @@ router.post('/join', async (req, res, next) => {
       gender: gender ? gender : 'secret'
     });
 
-    const emailToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: mailConfig.mailer.expiresIn,
-    });
-
-    const mailOptions = {
-      from: mailConfig.mailer.user,
-      to: email,
-      subject: 'Verification Email',
-      html: `
-      <a href="http://localhost:8081/auth/verify/${emailToken}" target="_blank")">
-        Click Me
-      </a>
-      `,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        logger.error(`[Mailer] ${error}`);
-    
-        return next(error);
-      } else {
-        logger.info(`[Mailer] ${info.response}`);
-      };
+    sendEmail(user, () => {
+      logger.error(`[Mailer] ${error}`);
+  
+      return next(error);
+    }, () => {
+      logger.info(`[Mailer] ${info.response}`);
     });
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -125,6 +133,26 @@ router.post('/join', async (req, res, next) => {
 
     return next(error);
   };
+});
+
+router.get('/resend', verifyToken, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.id } });
+
+    sendEmail(user, () => {
+      logger.error(`[Mailer] ${error}`);
+  
+      return next(error);
+    }, () => {
+      logger.info(`[Mailer] ${info.response}`);
+    });
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ email: user.email, error: DB_STATUS_CODE.OK });
+  } catch (error) {
+    logger.error(`[/resend] ${error}`);
+
+    return next(error);
+  }
 });
 
 router.get('/verify/:token', async (req, res, next) => {
