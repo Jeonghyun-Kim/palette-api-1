@@ -37,7 +37,7 @@ const checkRefreshToken = async (user, refresh_token) => {
   return token;
 };
 
-const sendEmail = (user, cb_on_success, cb_on_fail) => {
+const sendEmail = (user, next) => {
   const emailToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: mailConfig.mailer.expiresIn,
   });
@@ -47,7 +47,7 @@ const sendEmail = (user, cb_on_success, cb_on_fail) => {
     to: user.email,
     subject: 'Verification Email',
     html: `
-    <a href="http://localhost:8081/auth/verify/${emailToken}" target="_blank")">
+    <a href="http://api.airygall.com:8081/auth/verify/${emailToken}" target="_blank")">
       Click Me
     </a>
     `,
@@ -55,9 +55,11 @@ const sendEmail = (user, cb_on_success, cb_on_fail) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      cb_on_success();
+      logger.error(`[MAILER] ${error}`);
+
+      next(error);
     } else {
-      cb_on_fail();
+      logger.info(`[MAILER] ${info.response}`);
     };
   });
 }
@@ -113,13 +115,7 @@ router.post('/join', async (req, res, next) => {
       gender: gender ? gender : 'secret'
     });
 
-    sendEmail(user, () => {
-      logger.error(`[Mailer] ${error}`);
-  
-      return next(error);
-    }, () => {
-      logger.info(`[Mailer] ${info.response}`);
-    });
+    sendEmail(user, next);
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: tokenExpireTime
@@ -139,13 +135,7 @@ router.get('/resend', verifyToken, async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { id: req.id } });
 
-    sendEmail(user, () => {
-      logger.error(`[Mailer] ${error}`);
-  
-      return next(error);
-    }, () => {
-      logger.info(`[Mailer] ${info.response}`);
-    });
+    sendEmail(user, next);
 
     return res.status(HTTP_STATUS_CODE.OK).json({ email: user.email, error: DB_STATUS_CODE.OK });
   } catch (error) {
