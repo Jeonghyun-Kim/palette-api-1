@@ -39,7 +39,7 @@ const checkRefreshToken = async (user, refresh_token) => {
 
 const sendEmail = (user, next) => {
   const emailToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: mailConfig.mailer.expiresIn,
+    expiresIn: tokenExpireTime,
   });
 
   const mailOptions = {
