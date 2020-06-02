@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('user', {
+  return sequelize.define('users', {
     nick: {
       type: DataTypes.STRING(20),
       allowNull: false,
@@ -28,8 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 'secret'
     },
-    profileSrc: {
-      type: DataTypes.STRING(20),
+    profileUrl: {
+      type: DataTypes.STRING(100),
       allowNull: true,
     },
     verified: {

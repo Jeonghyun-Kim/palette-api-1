@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('image', {
+  return sequelize.define('images', {
     url: {
       type: DataTypes.STRING(100),
       allowNull: false

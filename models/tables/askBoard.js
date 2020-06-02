@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('askBoard', {
+  return sequelize.define('askBoards', {
     title: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
     content: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.TEXT,
       allowNull: false,
       defaultValue: 0,
     },

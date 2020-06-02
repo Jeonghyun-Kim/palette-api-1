@@ -26,13 +26,13 @@ db.Gallery.hasMany(db.Painting);
 db.Gallery.hasMany(db.User, { as: 'Managers' })
 db.Painting.hasMany(db.Image, { onDelete: 'cascade' });
 
-db.Collection.belongsToMany(db.Painting, { through: 'CollectionPaintings' });
+db.Collection.belongsToMany(db.Painting, { through: 'collectionPaintings' });
 
 db.User.belongsToMany(db.Collection, { as: 'LikedCollections', through: 'collectionLikes', foreignKey: 'userId' });
 db.Collection.belongsToMany(db.User, { as: 'LikedUsers', through: 'collectionLikes', foreignKey: 'collectionId'});
 
-db.User.belongsToMany(db.Collection, { as: 'LikedCollections', through: 'askBoards', foreignKey: 'userId' });
-db.Collection.belongsToMany(db.User, { as: 'LikedUsers', through: 'askBoards', foreignKey: 'collectionId'});
+db.User.belongsToMany(db.Collection, { as: 'AskedCollections', through: 'askBoards', foreignKey: 'userId' });
+db.Collection.belongsToMany(db.User, { as: 'AsKedUsers', through: 'askBoards', foreignKey: 'collectionId'});
 
 db.User.belongsToMany(db.Gallery, { as: 'Followings', through: 'galleryFollows', foreignKey: 'userId' });
 db.Gallery.belongsToMany(db.User, { as: 'Followers', through: 'galleryFollows', foreignKey: 'galleryId'});

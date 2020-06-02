@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('refreshToken', {
+  return sequelize.define('refreshTokens', {
     value: {
       type: DataTypes.STRING(64),
       allowNull: false
