@@ -10,14 +10,14 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 router.use(jsonParser);
 
 router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
-  const { id } = req.body;
+  const { id, level } = req.body;
   try {
-    const { level } = await userUtils.setLevelById(id, res);
+    const { _level } = await userUtils.setLevelById({ id, level }, res);
 
-    if (!level) {
+    if (!_level) {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
     } else {
-      return res.status(HTTP_STATUS_CODE.OK).json({ level });
+      return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
   } catch {
     return response.sendInternalError(res);
@@ -25,19 +25,19 @@ router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
 });
 
 router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
-  const { email } = req.body;
+  const { email, level } = req.body;
 
   if (!email) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   };
 
   try {
-    const { level } = await userUtils.setLevelByEmail(email, res);
+    const { _level } = await userUtils.setLevelByEmail({ email, level }, res);
 
-    if (!level) {
+    if (!_level) {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
     } else {
-      return res.status(HTTP_STATUS_CODE.OK).json({ level });
+      return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
   } catch {
     response.sendInternalError(res);
@@ -45,19 +45,19 @@ router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
 });
 
 router.put('/level/nick', verifyToken, checkAdmin, async (req, res) => {
-  const { nick } = req.body;
+  const { nick, level } = req.body;
 
   if (!nick) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   };
 
   try {
-    const { level } = await userUtils.setLevelByNick(nick, res);
+    const { _level } = await userUtils.setLevelByNick({ nick, level }, res);
 
-    if (!level) {
+    if (!_level) {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
     } else {
-      return res.status(HTTP_STATUS_CODE.OK).json({ level });
+      return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
   } catch {
     response.sendInternalError(res);
