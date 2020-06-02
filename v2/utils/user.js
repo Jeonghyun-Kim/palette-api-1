@@ -11,7 +11,9 @@ userUtils.findById = async (id, res) => {
   try {
     const user = await db.User.findOne({ where: { id } });
 
-    delete user.password;
+    if (user) {
+      delete user.password;
+    };
 
     return user;
   } catch (err) {
