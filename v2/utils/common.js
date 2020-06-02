@@ -18,6 +18,29 @@ token.create = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn });
 };
 
+token.decodeId = (accessToken) => {
+  const { id } = jwt.decode(accessToken);
+  if (id) {
+    return id;
+  } else {
+    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
+  };
+};
+
+token.verify = (accessToken, res) => {
+  try {
+    const { id } = jwt.verify(accessToken, process.env.JWT_SECRET);
+
+    return { id };
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return { error: DB_STATUS_CODE.TOKEN_EXPIRED };
+    };
+    
+    return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
+  };
+};
+
 mailer.config = require('../../config/mailer_config');
 mailer.transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -51,9 +74,11 @@ mailer.sendVerificationEmail = (user, res) => {
     if (error) {
       logger.error(`[MAILER] ${error}`);
 
-      response.sendInternalError(res);
+      return response.sendInternalError(res);
     } else {
       logger.info(`[MAILER] ${info.response}`);
+
+      return true;
     };
   });
 };

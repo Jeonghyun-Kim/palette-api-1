@@ -2,6 +2,8 @@
 
 const jwt = require('jsonwebtoken');
 const logger = require('../config/winston_config');
+const { token, response } = require('./utils/common');
+const userUtils = require('./utils/user');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
 const { User } = require('../models');
@@ -11,15 +13,14 @@ const { User } = require('../models');
     return next() when the request's access_token is valid
 */
 const verifyToken = (req, res, next) => {
-  try {
-    req.id = jwt.verify(req.headers.authorization, process.env.JWT_SECRET).id;
-    return next();
-  } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json({ error: DB_STATUS_CODE.TOKEN_EXPIRED });
-    };
+  const { error, id } = token.verify(req.headers.authorization, res);
 
-    return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
+  if (error) {
+    return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json(error);
+  } else {
+    req.id = id;
+
+    return next();
   };
 };
 
@@ -30,17 +31,16 @@ const verifyToken = (req, res, next) => {
 */
 const checkAdmin = async (req, res, next) => {
   try {
-    const adminUser = await User.findOne({ where: { id: req.id } });
-    if (adminUser.level < 99) {
-      res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
-    } else {
-      return next();
-    }
-  } catch (error) {
-    logger.error(`[CHECK ADMIN] ${error}`);
+    const adminUser = await userUtils.findById(req.id);
 
-    return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
-  }
+    if (adminUser.level < 99) {
+      return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
+    };
+    
+    return next();
+  } catch {
+    return response.sendInternalError(res);
+  };
 };
 
 module.exports = {

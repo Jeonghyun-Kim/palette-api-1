@@ -31,18 +31,25 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
   try {
     const user = await db.User.create({ nick, name, email, password, gender });
 
-    mailer.sendVerificationEmail(user, res);
+    if (mailer.sendVerificationEmail(user, res)) {
+      const accessToken = token.create(user.id);
+      const refreshToken = sha256(uuid());
 
-    const accessToken = token.create(user.id);
-    const refreshToken = sha256(uuid());
+      logger.info(`refreshToken: ${refreshToken}, user: ${JSON.stringify(user)}`);
 
-    await db.RefreshToken.create({ value: refreshToken, userId: user.id });
+      await db.RefreshToken.create({ value: refreshToken, userId: user.id });
 
-    return { accessToken, refreshToken };
+      return { accessToken, refreshToken };
+    } else {
+      logger.error(`[MAILER] ${error}`);
+      await user.destroy();
+
+      return response.sendInternalError(res);
+    };    
   } catch (error) {
-    logger.error(`[USER-create]`)
+    logger.error(`[USER-create] ${error}`);
 
-    response.sendInternalError(res);
+    return response.sendInternalError(res);
   };
 };
 
