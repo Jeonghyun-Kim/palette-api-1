@@ -37,7 +37,7 @@ mailer.sendVerificationEmail = (user, res) => {
   const emailToken = token.create(user.id);
 
   const mailOptions = {
-    from: mailConfig.mailer.user,
+    from: mailer.config.mailer.user,
     to: user.email,
     subject: 'Verification Email',
     html: `
