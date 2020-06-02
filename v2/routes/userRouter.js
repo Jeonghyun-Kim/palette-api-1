@@ -43,9 +43,9 @@ router.put('/my', verifyToken, async (req, res) => {
   // TODO: INPUT VALIDATION
 
   try {
-    const exuser = await userUtils.findByNick(nick, res);
+    const exUser = await userUtils.findByNick(nick, res);
 
-    if (exuser.id !== req.id) {
+    if (exUser && exUser.id !== req.id) {
       return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
     };
 
