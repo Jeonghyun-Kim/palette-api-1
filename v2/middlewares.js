@@ -31,13 +31,11 @@ const verifyToken = (req, res, next) => {
 */
 const checkAdmin = async (req, res, next) => {
   try {
-    const adminUser = await userUtils.findById(req.id);
-
-    if (adminUser.level < 99) {
+    if (await userUtils.isAdmin(req.id, res)) {
+      return next();
+    } else {
       return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
     };
-    
-    return next();
   } catch {
     return response.sendInternalError(res);
   };

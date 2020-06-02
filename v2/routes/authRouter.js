@@ -3,7 +3,6 @@ const sha256 = require('sha256');
 const jsonParser = require('body-parser').json();
 const router = express.Router();
 
-const logger = require('../../config/winston_config');
 const { token, response, mailer } = require('../utils/common');
 const userUtils = require('../utils/user');
 const { verifyToken } = require('../middlewares');
@@ -101,7 +100,7 @@ router.post('/token', async (req, res) => {
 });
 
 router.get('/test', verifyToken, (_req, res) => {
-  return res.status(HTTP_STATUS_CODE.OK).send(`유효한 토큰입니다.`);
+  return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
 });
 
 router.get('/resend', verifyToken, async (req, res) => {
