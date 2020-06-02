@@ -8,7 +8,7 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
 const authRouter = require('./routes/authRouter');
 
-const version = '0.0.1';
+const version = '0.1.1';
 
 router.use('/auth', authRouter);
 
