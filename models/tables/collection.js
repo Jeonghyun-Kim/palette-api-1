@@ -4,6 +4,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    backgroudColor: {
+      type: DataTypes.STRING(9),
+      allowNull: false,
+      defaultValue: '#edf7f7',
+    },
     numLike: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
