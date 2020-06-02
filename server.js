@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const { sequelize } = require('./models');
 
-const indexRouter = require('./v1');
+const indexRouter = require('./v2');
 
 const app = express();
 
@@ -30,10 +30,10 @@ app.all('*', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  logger.error(`[FINAL] ${err}`);
   if (process.env.NODE_ENV === 'production') {
     res.status(err.status || 500).json({ error: `An Error Occured.`})
   } else {
-    // logger.error(`[FINAL] ${err}`);
     res.status(err.status || 500).json({ error: err.message, stack: err.stack });
   };
 });

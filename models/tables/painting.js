@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 1
     },
     thumbnailUrl: {
-      type: DataTypes.STRING(70),
+      type: DataTypes.STRING(100),
       allowNull: false
     }
   }, {

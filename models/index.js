@@ -8,19 +8,33 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.User = require('./user')(sequelize, Sequelize);
-db.RefreshToken = require('./refreshToken')(sequelize, Sequelize);
-db.Painting = require('./painting')(sequelize, Sequelize);
-db.Image = require('./image')(sequelize, Sequelize);
+db.User = require('./tables/user')(sequelize, Sequelize);
+db.ArtFair = require('./tables/artFair')(sequelize, Sequelize);
+db.Gallery = require('./tables/gallery')(sequelize, Sequelize);
+db.Collection = require('./tables/collection')(sequelize, Sequelize);
+db.AskBoard = require('./tables/askBoard')(sequelize, Sequelize);
+db.RefreshToken = require('./tables/refreshToken')(sequelize, Sequelize);
+db.Painting = require('./tables/painting')(sequelize, Sequelize);
+db.Image = require('./tables/image')(sequelize, Sequelize);
 
 /* CONFIGURE DB ASSOCIATIONS HERE */
 db.User.hasOne(db.RefreshToken, { onDelete: 'cascade' });
 
-db.User.hasMany(db.Painting, { foreignKey: 'ownerId', onDelete: 'cascade' });
-
+db.ArtFair.hasMany(db.Collection);
+db.Gallery.hasMany(db.Collection, { onDelete: 'cascade' });
+db.Gallery.hasMany(db.Painting);
+db.Gallery.hasMany(db.User, { as: 'Managers' })
 db.Painting.hasMany(db.Image, { onDelete: 'cascade' });
 
-db.User.belongsToMany(db.Painting, { as: 'LikedPaintings', through: 'UserLikePainting', foreignKey: 'userId' });
-db.Painting.belongsToMany(db.User, { as: 'LikedUsers', through: 'UserLikePainting', foreignKey: 'paintingId'});
+db.Collection.belongsToMany(db.Painting, { through: 'CollectionPaintings' });
+
+db.User.belongsToMany(db.Collection, { as: 'LikedCollections', through: 'collectionLikes', foreignKey: 'userId' });
+db.Collection.belongsToMany(db.User, { as: 'LikedUsers', through: 'collectionLikes', foreignKey: 'collectionId'});
+
+db.User.belongsToMany(db.Collection, { as: 'LikedCollections', through: 'askBoards', foreignKey: 'userId' });
+db.Collection.belongsToMany(db.User, { as: 'LikedUsers', through: 'askBoards', foreignKey: 'collectionId'});
+
+db.User.belongsToMany(db.Gallery, { as: 'Followings', through: 'galleryFollows', foreignKey: 'userId' });
+db.Gallery.belongsToMany(db.User, { as: 'Followers', through: 'galleryFollows', foreignKey: 'galleryId'});
 
 module.exports = db;
