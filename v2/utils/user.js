@@ -74,6 +74,20 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
   };
 };
 
+userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
+  try {
+    const user = await this.findById(id, res);
+
+    await user.update({ nick, name, gender });
+
+    return { nick, name, gender };
+  } catch (err) {
+    logger.error(`[USER-updateInfo] ${err}`);
+
+    return response.sendInternalError(res);
+  };
+};
+
 userUtils.isAdmin = async (id, res) => {
   try {
     const user = await this.findById(id);

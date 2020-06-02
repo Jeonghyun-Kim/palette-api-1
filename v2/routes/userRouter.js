@@ -39,7 +39,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 });
 
 router.put('/my', verifyToken, async (req, res) => {
-  const { nick, name, gender } = req.body;
+  const  { nick, name, gender } = req.body;
   // TODO: INPUT VALIDATION
 
   try {
@@ -49,8 +49,7 @@ router.put('/my', verifyToken, async (req, res) => {
       return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
     };
 
-    const user = await userUtils.findById(req.id, res);
-    await user.update({ nick, name, gender: gender || 'secret' });
+    await userUtils.updateInfo(req.id, { nick, name, gender: gender || 'secret' }, res);
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, gender: gender || 'secret' } });
   } catch {
