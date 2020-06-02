@@ -11,8 +11,14 @@ router.use(jsonParser);
 
 router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
   const { id, level } = req.body;
+  //TODO: INPUT VALIDATION
+
+  if (!id || !level) {
+    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
+  };
+
   try {
-    const { _level } = await userUtils.setLevelById({ id, level }, res);
+    const _level = await userUtils.setLevelById({ id, level }, res);
 
     if (!_level) {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
@@ -26,13 +32,14 @@ router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
 
 router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
   const { email, level } = req.body;
+  //TODO: INPUT VALIDATION
 
-  if (!email) {
+  if (!email || !level) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   };
 
   try {
-    const { _level } = await userUtils.setLevelByEmail({ email, level }, res);
+    const _level = await userUtils.setLevelByEmail({ email, level }, res);
 
     if (!_level) {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
@@ -46,13 +53,14 @@ router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
 
 router.put('/level/nick', verifyToken, checkAdmin, async (req, res) => {
   const { nick, level } = req.body;
+  //TODO: INPUT VALIDATION
 
-  if (!nick) {
+  if (!nick || !level) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   };
 
   try {
-    const { _level } = await userUtils.setLevelByNick({ nick, level }, res);
+    const _level = await userUtils.setLevelByNick({ nick, level }, res);
 
     if (!_level) {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });

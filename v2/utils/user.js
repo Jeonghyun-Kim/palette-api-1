@@ -131,7 +131,7 @@ userUtils.setLevelByNick = async ({ nick, level }, res) => {
     } else {
       await user.update({ level }); 
 
-      return { level };
+      return level;
     };
   } catch (err) {
     logger.error(`[USER-setLevelByNick] ${err}`);
@@ -149,7 +149,7 @@ userUtils.setLevelById = async ({ id, level }, res) => {
     } else {
       await user.update({ level }); 
 
-      return { level };
+      return level;
     };
   } catch (err) {
     logger.error(`[USER-setLevelById] ${err}`);
@@ -167,7 +167,7 @@ userUtils.setLevelByEmail = async ({ email, level }, res) => {
     } else {
       await user.update({ level }); 
 
-      return { level };
+      return level;
     };
   } catch (err) {
     logger.error(`[USER-setLevelByEmail] ${err}`);
