@@ -59,16 +59,14 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
   try {
     const user = await db.User.create({ nick, name, email, password, gender });
 
-    logger.info(`PASSED! user: ${JSON.stringify(user)}`);
+    mailer.sendVerificationEmail(user);
 
-    return mailer.sendVerificationEmail(user, res, async () => {
-      const accessToken = token.create(user.id);
-      const refreshToken = sha256(uuid());
+    const accessToken = token.create(user.id);
+    const refreshToken = sha256(uuid());
 
-      await db.RefreshToken.create({ value: refreshToken, userId: user.id });
+    await db.RefreshToken.create({ value: refreshToken, userId: user.id });
 
-      return { accessToken, refreshToken };
-    });
+    return { accessToken, refreshToken };
   } catch (err) {
     logger.error(`[USER-create] ${err}`);
 

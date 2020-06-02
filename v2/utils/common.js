@@ -56,7 +56,7 @@ mailer.transporter = nodemailer.createTransport({
     expires: mailer.config.mailer.expires,
   },
 });
-mailer.sendVerificationEmail = (user, res, cb) => {
+mailer.sendVerificationEmail = (user) => {
   const emailToken = token.create(user.id);
 
   const mailOptions = {
@@ -70,15 +70,9 @@ mailer.sendVerificationEmail = (user, res, cb) => {
     `,
   };
 
-  return mailer.transporter.sendMail(mailOptions, async (error) => {
-    if (!error) {
-      return await cb();
-    } else {
+  mailer.transporter.sendMail(mailOptions, (error) => {
+    if (error) {
       logger.error(`[MAILER] ${error}`);
-
-      await user.destroy();
-      
-      return response.sendInternalError(res);
     };
   });
 };
