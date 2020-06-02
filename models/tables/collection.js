@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     backgroudColor: {
       type: DataTypes.STRING(9),
       allowNull: false,
-      defaultValue: '#edf7f7',
+      defaultValue: '#ffedf7f7',
     },
     numLike: {
       type: DataTypes.INTEGER.UNSIGNED,
