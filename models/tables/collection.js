@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('collections', {
+  const collection = sequelize.define('Collection', {
     name: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -15,9 +15,13 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
     },
   }, {
+    tableName: 'collection',
+    freezeTableName: true,
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
     collate: 'utf8_general_ci'
   });
+
+  return collection;
 };

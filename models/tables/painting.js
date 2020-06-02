@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('paintings', {
+  const painting = sequelize.define('Painting', {
     painter: {
       type: DataTypes.STRING(50),
       allowNull: false
@@ -47,9 +47,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   }, {
+    tableName: 'painting',
+    freezeTableName: true,
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
     collate: 'utf8_general_ci'
   });
+
+  return painting;
 };

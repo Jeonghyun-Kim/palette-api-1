@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('askBoards', {
+  const askBoard = sequelize.define('AskBoard', {
     title: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -10,9 +10,13 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
     },
   }, {
+    tableName: 'askBoard',
+    freezeTableName: true,
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
     collate: 'utf8_general_ci'
   });
+
+  return askBoard;
 };

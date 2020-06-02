@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('artFairs', {
+  const artFair = sequelize.define('ArtFair', {
     name: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -13,9 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {
+    tableName: 'artFair',
+    freezeTableName: true,
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
     collate: 'utf8_general_ci'
   });
+  
+  return artFair;
 };
