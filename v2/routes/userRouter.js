@@ -41,6 +41,18 @@ router.put('/', verifyToken, async (req, res) => {
   };
 });
 
+router.delete('/', verifyToken, async (req, res) => {
+  try {
+    if (await userUtils.deleteById(req.id, res)) {
+      return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
+    };
+
+    return res.status(HTTP_STATUS_CODE.EXPECTATION_FAILED).json({ error: DB_STATUS_CODE.COMMON_ERROR });
+  } catch {
+    return response.sendInternalError(res);
+  };
+});
+
 router.get('/:id', verifyToken, async (req, res) => {
   try {
     const user = await userUtils.findById(req.params.id, res);
