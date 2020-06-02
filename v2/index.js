@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const logger = require('../config/winston_config');
-const db = require('../models');
-const { verifyToken } = require('./middlewares');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
 
 const authRouter = require('./routes/authRouter');
 const adminRouter = require('./routes/adminRouter');
+const userRouter = require('./routes/userRouter');
 
 const version = '0.1.1';
 
