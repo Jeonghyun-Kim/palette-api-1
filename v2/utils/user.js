@@ -76,7 +76,7 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
 
 userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
   try {
-    const user = await this.findById(id, res);
+    const user = await userUtils.findById(id, res);
 
     await user.update({ nick, name, gender });
 
@@ -90,7 +90,7 @@ userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
 
 userUtils.isAdmin = async (id, res) => {
   try {
-    const user = await this.findById(id);
+    const user = await userUtils.findById(id);
 
     if (!user || user.level < 90) {
       return null;
@@ -106,7 +106,7 @@ userUtils.isAdmin = async (id, res) => {
 
 userUtils.deleteById = async (id, res) => {
   try {
-    const user = await this.findById(id);
+    const user = await userUtils.findById(id);
 
     if (!user) {
       return null;
@@ -124,7 +124,7 @@ userUtils.deleteById = async (id, res) => {
 
 userUtils.setLevelByNick = async ({ nick, level }, res) => {
   try {
-    const user = await this.findByNick(nick, res);
+    const user = await userUtils.findByNick(nick, res);
 
     if (!user) {
       return null;
@@ -142,7 +142,7 @@ userUtils.setLevelByNick = async ({ nick, level }, res) => {
 
 userUtils.setLevelById = async ({ id, level }, res) => {
   try {
-    const user = await this.findById(id, res);
+    const user = await userUtils.findById(id, res);
 
     if (!user) {
       return null;
@@ -160,7 +160,7 @@ userUtils.setLevelById = async ({ id, level }, res) => {
 
 userUtils.setLevelByEmail = async ({ email, level }, res) => {
   try {
-    const user = await this.findByEmail(email, res);
+    const user = await userUtils.findByEmail(email, res);
 
     if (!user) {
       return null;
