@@ -17,8 +17,8 @@ router.get('/', verifyToken, async (req, res) => {
     const { nick, name, level, email, gender, profileUrl, verified } = user;
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, level, email, gender, profileUrl, verified } });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -36,8 +36,8 @@ router.put('/', verifyToken, async (req, res) => {
     await userUtils.updateInfo(req.id, { nick, name, gender: gender || 'secret' }, res);
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, gender: gender || 'secret' } });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -48,8 +48,8 @@ router.delete('/', verifyToken, async (req, res) => {
     };
 
     return res.status(HTTP_STATUS_CODE.EXPECTATION_FAILED).json({ error: DB_STATUS_CODE.COMMON_ERROR });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -64,8 +64,8 @@ router.get('/:id', verifyToken, async (req, res) => {
     const { nick, name, level, profileUrl } = user;
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, level, profileUrl } });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -85,8 +85,8 @@ router.put('/password', verifyToken, async (req, res) => {
     await user.update({ password: sha256(newPassword) });
 
     return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 

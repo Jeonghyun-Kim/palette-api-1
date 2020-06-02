@@ -1,8 +1,6 @@
 const express = require('express');
 const jsonParser = require('body-parser').json();
 const router = express.Router();
-
-const { response } = require('../utils/common');
 const userUtils = require('../utils/user');
 const { verifyToken, checkAdmin } = require('../middlewares');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
@@ -25,8 +23,8 @@ router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
     } else {
       return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -46,8 +44,8 @@ router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
     } else {
       return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -67,8 +65,8 @@ router.put('/level/nick', verifyToken, checkAdmin, async (req, res) => {
     } else {
       return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -79,9 +77,9 @@ router.delete('/user/:id', verifyToken, checkAdmin, async (req, res) => {
     } else {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST.json({ erorr: DB_STATUS_CODE.NO_SUCH_USER }));
     };
-  } catch {
-    return response.sendInternalError(res);
-  }
+  } catch (err) {
+    return next(err);
+  };
 });
 
 module.exports = router;

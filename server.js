@@ -22,17 +22,17 @@ if (process.env.NODE_ENV === 'production') {
 };
 app.use('/', indexRouter);
 
-app.all('*', (req, res, next) => {
+app.all('*', (_req, _res, next) => {
   const error = new Error('404 NOT FOUND');
   error.status = 404;
 
   return next(error);
 });
 
-app.use((err, req, res, next) => {
-  logger.error(`[FINAL] ${err}`);
+app.use((err, _req, res, _next) => {
+  logger.error(`[UNCAUGHT ERROR] ${err}`);
   if (process.env.NODE_ENV === 'production') {
-    res.status(err.status || 500).json({ error: `An Error Occured.`})
+    res.status(err.status || 500).json({ error: `Unknown Error Occured.`})
   } else {
     res.status(err.status || 500).json({ error: err.message, stack: err.stack });
   };

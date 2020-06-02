@@ -28,8 +28,8 @@ router.post('/join', async (req, res) => {
     }, res);
   
     return res.status(HTTP_STATUS_CODE.CREATED).json({ accessToken, refreshToken });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -52,8 +52,8 @@ router.post('/login', async (req, res) => {
     };
 
     return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.PASSWORD_WRONG });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -70,8 +70,8 @@ router.get('/verify/:token', async (req, res) => {
     await user.save();
 
     return res.status(HTTP_STATUS_CODE.OK).send(`성공적으로 인증되었습니다.`);
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -95,8 +95,8 @@ router.post('/token', async (req, res) => {
     const accessToken = token.create(id);
   
     return res.status(HTTP_STATUS_CODE.OK).json({ accessToken });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 
@@ -113,8 +113,8 @@ router.get('/resend', verifyToken, async (req, res) => {
     };
 
     return res.status(HTTP_STATUS_CODE.OK).json({ email: user.email });
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 });
 

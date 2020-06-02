@@ -36,8 +36,8 @@ const checkAdmin = async (req, res, next) => {
     } else {
       return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.FORBIDDEN });
     };
-  } catch {
-    return response.sendInternalError(res);
+  } catch (err) {
+    return next(err);
   };
 };
 
