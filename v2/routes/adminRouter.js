@@ -47,7 +47,7 @@ router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
       return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
   } catch {
-    response.sendInternalError(res);
+    return response.sendInternalError(res);
   };
 });
 
@@ -68,8 +68,20 @@ router.put('/level/nick', verifyToken, checkAdmin, async (req, res) => {
       return res.status(HTTP_STATUS_CODE.OK).json({ level: _level });
     };
   } catch {
-    response.sendInternalError(res);
+    return response.sendInternalError(res);
   };
+});
+
+router.delete('/user/:id', verifyToken, checkAdmin, async (req, res) => {
+  try {
+    if (await userUtils.deleteById(req.params.id, res)) {
+      return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
+    } else {
+      return res.status(HTTP_STATUS_CODE.BAD_REQUEST.json({ erorr: DB_STATUS_CODE.NO_SUCH_USER }));
+    };
+  } catch {
+    return response.sendInternalError(res);
+  }
 });
 
 module.exports = router;
