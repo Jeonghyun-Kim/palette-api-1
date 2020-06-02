@@ -16,7 +16,7 @@ const verifyToken = (req, res, next) => {
   const { error, id } = token.verify(req.headers.authorization, res);
 
   if (error) {
-    return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json(error);
+    return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json({ error: DB_STATUS_CODE.TOKEN_EXPIRED });
   } else {
     req.id = id;
 
