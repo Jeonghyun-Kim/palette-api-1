@@ -25,7 +25,9 @@ userUtils.findByEmail = async (email, res) => {
   try {
     const user = await db.User.findOne({ where: { email } });
 
-    delete user.password;
+    if (user) {
+      delete user.password;
+    };
 
     return user;
   } catch (err) {
@@ -39,7 +41,9 @@ userUtils.findByNick = async (nick, res) => {
   try {
     const user = await db.User.findOne({ where: { nick } });
 
-    delete user.password;
+    if (user) {
+      delete user.password;
+    };
 
     return user;
   } catch (err) {
