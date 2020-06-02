@@ -34,7 +34,7 @@ router.post('/join', async (req, res) => {
   };
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   // TODO: INPUT VALIDATION
 
@@ -58,7 +58,7 @@ router.post('/login', async (req, res, next) => {
   };
 });
 
-router.get('/verify/:token', async (req, res, next) => {
+router.get('/verify/:token', async (req, res) => {
   const { error, id } = token.verify(req.params.token, res);
   try {
     if (error) {
@@ -76,7 +76,7 @@ router.get('/verify/:token', async (req, res, next) => {
   };
 });
 
-router.post('/token', async (req, res, next) => {
+router.post('/token', async (req, res) => {
   const { refreshToken } = req.body;
   
   if (!refreshToken) {
@@ -104,17 +104,17 @@ router.get('/test', verifyToken, (_req, res) => {
   return res.status(HTTP_STATUS_CODE.OK).send(`유효한 토큰입니다.`);
 });
 
-router.get('/resend', verifyToken, async (req, res, next) => {
+router.get('/resend', verifyToken, async (req, res) => {
   try {
     const user = await userUtils.findById(req.id);
 
     if (!mailer.sendVerificationEmail(user, res)) {
-      return response.sendInternalError();
+      return response.sendInternalError(res);
     };
 
     return res.status(HTTP_STATUS_CODE.OK).json({ email: user.email });
   } catch {
-    return response.sendInternalError();
+    return response.sendInternalError(res);
   };
 });
 
