@@ -70,15 +70,13 @@ mailer.sendVerificationEmail = (user, res) => {
     `,
   };
 
-  mailer.transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
+  mailer.transporter.sendMail(mailOptions, (error) => {
+    if (!error) {
+      return true;
+    } else {
       logger.error(`[MAILER] ${error}`);
 
-      return response.sendInternalError(res);
-    } else {
-      logger.info(`[MAILER] ${info.response}`);
-
-      return true;
+      return false;
     };
   });
 };

@@ -59,11 +59,11 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
   try {
     const user = await db.User.create({ nick, name, email, password, gender });
 
+    logger.info(`PASSED! user: ${JSON.stringify(user)}`);
+
     if (mailer.sendVerificationEmail(user, res)) {
       const accessToken = token.create(user.id);
       const refreshToken = sha256(uuid());
-
-      logger.info(`refreshToken: ${refreshToken}, user: ${JSON.stringify(user)}`);
 
       await db.RefreshToken.create({ value: refreshToken, userId: user.id });
 
@@ -72,7 +72,7 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
       await user.destroy();
 
       return response.sendInternalError(res);
-    };    
+    };
   } catch (err) {
     logger.error(`[USER-create] ${err}`);
 
