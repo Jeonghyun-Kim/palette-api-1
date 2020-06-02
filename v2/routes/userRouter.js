@@ -40,6 +40,8 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 router.put('/my', verifyToken, async (req, res) => {
   const { nick, name, gender } = req.body;
+  // TODO: INPUT VALIDATION
+
   try {
     const exuser = await userUtils.findByNick(nick, res);
 
@@ -48,7 +50,7 @@ router.put('/my', verifyToken, async (req, res) => {
     };
 
     const user = await userUtils.findById(req.id, res);
-    await user.update({ nick, name, gender: gender || 'secet' });
+    await user.update({ nick, name, gender: gender || 'secret' });
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, gender: gender || 'secret' } });
   } catch {
