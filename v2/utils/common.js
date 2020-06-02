@@ -11,7 +11,7 @@ const token = {};
 const mailer = {};
 
 response.sendInternalError = (res) => {
-  return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.INTERNAL_SERVER_ERROR });
+  return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.COMMON_ERROR });
 };
 
 token.create = (id) => {
