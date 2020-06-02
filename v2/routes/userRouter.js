@@ -59,6 +59,10 @@ router.put('/my', verifyToken, async (req, res) => {
 
 router.put('/password', verifyToken, async (req, res) => {
   const { password, newPassword } = req.body;
+  if (!password || !newPassword) {
+    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
+  };
+
   try {
     const user = await userUtils.findById(req.id, res);
 
