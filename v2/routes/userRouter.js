@@ -10,13 +10,32 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 router.use(jsonParser);
 
-router.get('/my', verifyToken, async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   try {
     const user = await userUtils.findById(req.id, res);
     
     const { nick, name, level, email, gender, profileUrl, verified } = user;
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, level, email, gender, profileUrl, verified } });
+  } catch {
+    return response.sendInternalError(res);
+  };
+});
+
+router.put('/', verifyToken, async (req, res) => {
+  const  { nick, name, gender } = req.body;
+  // TODO: INPUT VALIDATION
+
+  try {
+    const exUser = await userUtils.findByNick(nick, res);
+
+    if (exUser && exUser.id !== req.id) {
+      return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
+    };
+
+    await userUtils.updateInfo(req.id, { nick, name, gender: gender || 'secret' }, res);
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, gender: gender || 'secret' } });
   } catch {
     return response.sendInternalError(res);
   };
@@ -33,25 +52,6 @@ router.get('/:id', verifyToken, async (req, res) => {
     const { nick, name, level, profileUrl } = user;
 
     return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, level, profileUrl } });
-  } catch {
-    return response.sendInternalError(res);
-  };
-});
-
-router.put('/my', verifyToken, async (req, res) => {
-  const  { nick, name, gender } = req.body;
-  // TODO: INPUT VALIDATION
-
-  try {
-    const exUser = await userUtils.findByNick(nick, res);
-
-    if (exUser && exUser.id !== req.id) {
-      return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
-    };
-
-    await userUtils.updateInfo(req.id, { nick, name, gender: gender || 'secret' }, res);
-
-    return res.status(HTTP_STATUS_CODE.OK).json({ user: { nick, name, gender: gender || 'secret' } });
   } catch {
     return response.sendInternalError(res);
   };
