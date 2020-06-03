@@ -7,11 +7,11 @@ const { mailer, token, response } = require('./common');
 
 const userUtils = {};
 
-userUtils.findById = async (id, res) => {
+userUtils.findById = async (id, res, attributes = {}) => {
   try {
-    const user = await db.User.findOne({ where: { id } });
+    const user = await db.User.findOne({ where: { id }, attributes });
 
-    if (user) {
+    if (user.password) {
       delete user.password;
     }
 
@@ -23,11 +23,11 @@ userUtils.findById = async (id, res) => {
   }
 };
 
-userUtils.findByEmail = async (email, res) => {
+userUtils.findByEmail = async (email, res, attributes = {}) => {
   try {
-    const user = await db.User.findOne({ where: { email } });
+    const user = await db.User.findOne({ where: { email }, attributes });
 
-    if (user) {
+    if (user.password) {
       delete user.password;
     }
 
@@ -39,11 +39,11 @@ userUtils.findByEmail = async (email, res) => {
   }
 };
 
-userUtils.findByNick = async (nick, res) => {
+userUtils.findByNick = async (nick, res, attributes = {}) => {
   try {
-    const user = await db.User.findOne({ where: { nick } });
+    const user = await db.User.findOne({ where: { nick }, attributes });
 
-    if (user) {
+    if (user.password) {
       delete user.password;
     }
 
