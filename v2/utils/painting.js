@@ -46,6 +46,10 @@ paintingUtils.updateInfo = async (id, {
   try {
     const painting = await paintingUtils.findById(id, res);
 
+    if (!painting) {
+      return null;
+    }
+
     await painting.update({ painter, name, description, material, width, height, price, onSale });
 
     return painting;

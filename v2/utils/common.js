@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 const logger = require('../../config/winston_config');
+const { s3 } = require('../aws_defines');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 const expiresIn = '10m';
@@ -75,8 +76,33 @@ mailer.sendVerificationEmail = (user) => {
   });
 };
 
+const uploadS3 = async (bucketName, fileName, body) => {
+  const upload = new Promise((resolve, reject) => {
+    s3.upload({
+      Bucket: bucketName,
+      Key: fileName,
+      Body: body,
+      ACL: 'public-read',
+    }, (err, data) => {
+      if (err) {
+        logger.error(`[AWS] ${err}`);
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+
+  try {
+    await upload();
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
 module.exports = {
   response,
   token,
   mailer,
+  uploadS3,
 };
