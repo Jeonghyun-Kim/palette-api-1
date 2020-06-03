@@ -12,9 +12,9 @@ router.get('/', verifyToken, async (req, res, next) => {
   try {
     const user = await userUtils.findById(req.id, res);
 
-    const { createdAt, updatedAt, fkGalleryId, ...rest } = user;
+    const { createdAt, updatedAt, fkGalleryId, ...rest } = user.dataValues;
 
-    if (user.fkGalleryId) {
+    if (!user.fkGalleryId) {
       return res.status(HTTP_STATUS_CODE.OK).json({ user: rest });
     }
 
