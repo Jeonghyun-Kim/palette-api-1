@@ -7,13 +7,11 @@ const { mailer, token, response } = require('./common');
 
 const userUtils = {};
 
-userUtils.findById = async (id, res, attributes = {}) => {
+userUtils.findById = async (id, res, attr = {}) => {
   try {
+    const attributes = attr;
+    attributes.exclude = ['password'];
     const user = await db.User.findOne({ where: { id }, attributes });
-
-    if (user.password) {
-      delete user.password;
-    }
 
     return user;
   } catch (err) {
@@ -23,13 +21,11 @@ userUtils.findById = async (id, res, attributes = {}) => {
   }
 };
 
-userUtils.findByEmail = async (email, res, attributes = {}) => {
+userUtils.findByEmail = async (email, res, attr = {}) => {
   try {
+    const attributes = attr;
+    attributes.exclude = ['password'];
     const user = await db.User.findOne({ where: { email }, attributes });
-
-    if (user.password) {
-      delete user.password;
-    }
 
     return user;
   } catch (err) {
@@ -39,13 +35,11 @@ userUtils.findByEmail = async (email, res, attributes = {}) => {
   }
 };
 
-userUtils.findByNick = async (nick, res, attributes = {}) => {
+userUtils.findByNick = async (nick, res, attr = {}) => {
   try {
+    const attributes = attr;
+    attributes.exclude = ['password'];
     const user = await db.User.findOne({ where: { nick }, attributes });
-
-    if (user.password) {
-      delete user.password;
-    }
 
     return user;
   } catch (err) {
