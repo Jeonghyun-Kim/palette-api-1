@@ -78,6 +78,10 @@ userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
   try {
     const user = await userUtils.findById(id, res);
 
+    if (!user) {
+      return null;
+    }
+
     await user.update({ nick, name, gender });
 
     return { nick, name, gender };
@@ -90,7 +94,7 @@ userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
 
 userUtils.isAdmin = async (id, res) => {
   try {
-    const user = await userUtils.findById(id);
+    const user = await userUtils.findById(id, res);
 
     if (!user || user.level < 90) {
       return null;
@@ -106,10 +110,10 @@ userUtils.isAdmin = async (id, res) => {
 
 userUtils.deleteById = async (id, res) => {
   try {
-    const user = await userUtils.findById(id);
+    const user = await userUtils.findById(id, res);
 
     if (!user) {
-      return null;
+      return false;
     }
 
     await user.destroy();
