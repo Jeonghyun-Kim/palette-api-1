@@ -6,11 +6,11 @@ const jsonParser = require('body-parser').json();
 // const multer = require('multer');
 
 // const { response, uploadS3 } = require('../utils/common');
-// const userUtils = require('../utils/user');
+const userUtils = require('../utils/user');
 const galleryUtils = require('../utils/gallery');
 const { verifyToken } = require('../middlewares');
 // const { BUCKETS } = require('../aws_defines');
-const { HTTP_STATUS_CODE } = require('../../status_code');
+const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 // const upload = multer({
 //   storage: multer.memoryStorage(),
@@ -24,7 +24,14 @@ router.use(jsonParser);
 
 router.get('/', verifyToken, async (req, res, next) => {
   try {
-    const gallery = await galleryUtils.findOne(req.id, res);
+    const user = await userUtils.findById(req.id, res);
+
+    const id = user.fkGalleryId;
+    if (!id) {
+      return res.status(HTTP_STATUS_CODE.FORBIDDEN)
+        .json({ error: DB_STATUS_CODE.NOT_GALLERY_MANAGER });
+    }
+    const gallery = await galleryUtils.findOne(id, res);
     const paintings = await galleryUtils.getPaintings();
     const collections = await galleryUtils.getCollections();
 
