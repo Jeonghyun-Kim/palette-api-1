@@ -43,7 +43,15 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
-    collate: 'utf8_general_ci'
+    collate: 'utf8_general_ci',
+    hooks: {
+      afterDestroy: (instance, _options) => {
+        instance.getToken().then(token => token.destroy());
+      },
+      afterRestore: (instance, _options) => {
+        instance.getToken({ paranoid: false }).then(token => token.restore());
+      },
+    },
   });
 
   return user;

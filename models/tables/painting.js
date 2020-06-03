@@ -52,7 +52,15 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
-    collate: 'utf8_general_ci'
+    collate: 'utf8_general_ci',
+    hooks: {
+      afterDestroy: (instance, _options) => {
+        instance.getImages().then(images => images.forEach(image => image.destrory()));
+      },
+      afterRestore: (instance, _options) => {
+        instance.getImages({ paranoid: false }).then(images => images.forEach(image => image.restore()));
+      },
+    },
   });
 
   return painting;

@@ -30,7 +30,15 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     paranoid: true,
     charset: 'utf8',
-    collate: 'utf8_general_ci'
+    collate: 'utf8_general_ci',
+    hooks: {
+      afterDestroy: (instance, _options) => {
+        instance.getCollections().then(collections => collections.forEach(collection => collection.destrory()));
+      },
+      afterRestore: (instance, _options) => {
+        instance.getCollections({ paranoid: false }).then(collections => collections.forEach(collection => collection.restore()));
+      },
+    },
   });
 
   return gallery;
