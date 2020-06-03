@@ -9,7 +9,7 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
     return next() when the request's access_token is valid
 */
 const verifyToken = (req, res, next) => {
-  const { error, id } = token.verify(req.headers.authorization, res);
+  const { error, id } = token.verify(req.headers.authorization.replace(`${process.env.JWT_PREFIX} `, ''), res);
 
   if (error) {
     return res.status(HTTP_STATUS_CODE.TOKEN_EXPIRED).json({ error });

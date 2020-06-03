@@ -87,8 +87,8 @@ router.post('/token', async (req, res, next) => {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
   }
 
-  token.verify(req.headers.authorization, res);
-  const id = token.decodeId(req.headers.authorization);
+  token.verify(req.headers.authorization.replace(`${process.env.JWT_PREFIX} `, ''), res);
+  const id = token.decodeId(req.headers.authorization.replace(`${process.env.JWT_PREFIX} `, ''));
 
   try {
     const user = await userUtils.findById(id, res);
