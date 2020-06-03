@@ -48,6 +48,16 @@ router.get('/', verifyToken, async (req, res, next) => {
   }
 });
 
+router.get('/all', verifyToken, async (_req, res, next) => {
+  try {
+    const galleries = await galleryUtils.findAll(res);
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ galleries });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 router.get('/:id', verifyToken, async (req, res, next) => {
   try {
     const gallery = await galleryUtils.findOne(req.params.id, res);
@@ -67,16 +77,6 @@ router.get('/:id', verifyToken, async (req, res, next) => {
         paintings,
         collections,
       });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-router.get('/all', verifyToken, async (_req, res, next) => {
-  try {
-    const galleries = await galleryUtils.findAll(res);
-
-    return res.status(HTTP_STATUS_CODE.OK).json({ galleries });
   } catch (err) {
     return next(err);
   }
