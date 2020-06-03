@@ -126,7 +126,7 @@ router.post('/gallery', verifyToken, checkAdmin, upload.single('profile'), async
       name, address, tel, mobile, profileMsg, profileUrl,
     }, res);
 
-    await manager.update({ fkGalleryId: id });
+    await manager.update({ fkGalleryId: id, level: 50 });
 
     return res.status(HTTP_STATUS_CODE.CREATED).json({ galleryId: id, manager });
   } catch (err) {

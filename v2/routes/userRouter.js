@@ -12,10 +12,17 @@ router.get('/', verifyToken, async (req, res, next) => {
   try {
     const user = await userUtils.findById(req.id, res);
 
-    const { nick, name, level, email, gender, profileUrl, verified } = user;
+    const { createdAt, updatedAt, fkGalleryId, ...rest } = user;
 
-    return res.status(HTTP_STATUS_CODE.OK)
-      .json({ user: { nick, name, level, email, gender, profileUrl, verified } });
+    if (user.fkGalleryId) {
+      return res.status(HTTP_STATUS_CODE.OK).json({ user: rest });
+    }
+
+    const gallery = await user.getGallery();
+    const paintings = await gallery.getPaintings();
+    const collections = await gallery.getCollections();
+
+    return res.status(HTTP_STATUS_CODE.OK).json({ user: rest, gallery, paintings, collections });
   } catch (err) {
     return next(err);
   }
