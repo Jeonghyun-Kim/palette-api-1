@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     level: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
     },
     email: {
       type: DataTypes.STRING(30),
       allowNull: false,
-      unique: true
+      unique: true,
     },
     password: {
       type: DataTypes.STRING(64),
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     gender: {
       type: DataTypes.ENUM('secret', 'male', 'female'),
       allowNull: false,
-      defaultValue: 'secret'
+      defaultValue: 'secret',
     },
     profileUrl: {
       type: DataTypes.STRING(100),
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-    }
+    },
   }, {
     tableName: 'user',
     freezeTableName: true,

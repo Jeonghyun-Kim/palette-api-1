@@ -2,8 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const refreshToken = sequelize.define('RefreshToken', {
     value: {
       type: DataTypes.STRING(64),
-      allowNull: false
-    }
+      allowNull: false,
+    },
   }, {
     tableName: 'refreshToken',
     freezeTableName: true,

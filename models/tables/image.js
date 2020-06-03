@@ -2,8 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const image = sequelize.define('Image', {
     url: {
       type: DataTypes.STRING(100),
-      allowNull: false
-    }
+      allowNull: false,
+    },
   }, {
     tableName: 'image',
     freezeTableName: true,

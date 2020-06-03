@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     profileUrl: {
       type: DataTypes.STRING(100),
-      allowNull: true
+      allowNull: true,
     },
     profileMsg: {
       type: DataTypes.TEXT,
@@ -32,11 +32,13 @@ module.exports = (sequelize, DataTypes) => {
     charset: 'utf8',
     collate: 'utf8_general_ci',
     hooks: {
-      afterDestroy: (instance, _options) => {
-        instance.getCollections().then(collections => collections.forEach(collection => collection.destrory()));
+      afterDestroy: (instance) => {
+        instance.getCollections()
+          .then((collections) => collections.forEach((collection) => collection.destrory()));
       },
-      afterRestore: (instance, _options) => {
-        instance.getCollections({ paranoid: false }).then(collections => collections.forEach(collection => collection.restore()));
+      afterRestore: (instance) => {
+        instance.getCollections({ paranoid: false })
+          .then((collections) => collections.forEach((collection) => collection.restore()));
       },
     },
   });

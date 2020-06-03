@@ -1,14 +1,11 @@
-'use strict';
-
 const appRoot = require('app-root-path');
 const winston = require('winston');
 const process = require('process');
 
 const { combine, timestamp, label, printf } = winston.format;
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp}[${label}] ${level}: ${message}`;
-});
+// eslint-disable-next-line no-shadow
+const myFormat = printf(({ level, message, label, timestamp }) => `${timestamp}[${label}] ${level}: ${message}`);
 
 const options = {
   info_file: {
@@ -22,8 +19,8 @@ const options = {
     format: combine(
       label({ label: 'WST' }),
       timestamp(),
-      myFormat
-    )
+      myFormat,
+    ),
   },
 
   error_file: {
@@ -37,8 +34,8 @@ const options = {
     format: combine(
       label({ label: 'WST' }),
       timestamp(),
-      myFormat
-    )
+      myFormat,
+    ),
   },
 
   console: {
@@ -49,20 +46,20 @@ const options = {
     format: combine(
       label({ label: 'WINSTON' }),
       timestamp(),
-      myFormat
-    )
-  }
+      myFormat,
+    ),
+  },
 };
 const logger = process.env.NODE_ENV === 'production'
-? winston.createLogger({
-  transports: [
-    new winston.transports.File(options.info_file),
-    new winston.transports.File(options.error_file)
-  ],
-  exitOnError: false,
-})
-: winston.createLogger({
-  transports: [new winston.transports.Console(options.console)]
-});
+  ? winston.createLogger({
+    transports: [
+      new winston.transports.File(options.info_file),
+      new winston.transports.File(options.error_file),
+    ],
+    exitOnError: false,
+  })
+  : winston.createLogger({
+    transports: [new winston.transports.Console(options.console)],
+  });
 
 module.exports = logger;

@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../status_code');
@@ -13,8 +14,6 @@ router.use('/auth', authRouter);
 router.use('/admin', adminRouter);
 router.use('/user', userRouter);
 
-router.get('/', (_req, res) => {
-  return res.status(HTTP_STATUS_CODE.OK).json({ version, error: DB_STATUS_CODE.OK });
-});
+router.get('/', (_req, res) => res.status(HTTP_STATUS_CODE.OK).json({ version, error: DB_STATUS_CODE.OK }));
 
 module.exports = router;

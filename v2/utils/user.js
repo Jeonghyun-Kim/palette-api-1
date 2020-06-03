@@ -13,14 +13,14 @@ userUtils.findById = async (id, res) => {
 
     if (user) {
       delete user.password;
-    };
+    }
 
     return user;
   } catch (err) {
     logger.error(`[USER-findById] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.findByEmail = async (email, res) => {
@@ -29,14 +29,14 @@ userUtils.findByEmail = async (email, res) => {
 
     if (user) {
       delete user.password;
-    };
+    }
 
     return user;
   } catch (err) {
     logger.error(`[USER-findByEmail] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.findByNick = async (nick, res) => {
@@ -45,14 +45,14 @@ userUtils.findByNick = async (nick, res) => {
 
     if (user) {
       delete user.password;
-    };
+    }
 
     return user;
   } catch (err) {
     logger.error(`[USER-findByNick] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.create = async ({ nick, name, email, password, gender }, res) => {
@@ -63,7 +63,7 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
 
     const accessToken = token.create(user.id);
     const refreshToken = sha256(uuid());
-    
+
     await user.setToken(await db.RefreshToken.create({ value: refreshToken }));
 
     return { accessToken, refreshToken };
@@ -71,7 +71,7 @@ userUtils.create = async ({ nick, name, email, password, gender }, res) => {
     logger.error(`[USER-create] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
@@ -85,7 +85,7 @@ userUtils.updateInfo = async (id, { nick, name, gender }, res) => {
     logger.error(`[USER-updateInfo] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.isAdmin = async (id, res) => {
@@ -94,9 +94,9 @@ userUtils.isAdmin = async (id, res) => {
 
     if (!user || user.level < 90) {
       return null;
-    } else {
-      return { level: user.level };
-    };
+    }
+
+    return { level: user.level };
   } catch (err) {
     logger.error(`[USER-isAdmin] ${err}`);
 
@@ -110,16 +110,16 @@ userUtils.deleteById = async (id, res) => {
 
     if (!user) {
       return null;
-    } else {
-      await user.destroy();
-  
-      return true;
-    };
+    }
+
+    await user.destroy();
+
+    return true;
   } catch (err) {
     logger.error(`[USER-delete] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.setLevelByNick = async ({ nick, level }, res) => {
@@ -128,16 +128,16 @@ userUtils.setLevelByNick = async ({ nick, level }, res) => {
 
     if (!user) {
       return null;
-    } else {
-      await user.update({ level }); 
+    }
 
-      return level;
-    };
+    await user.update({ level });
+
+    return level;
   } catch (err) {
     logger.error(`[USER-setLevelByNick] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.setLevelById = async ({ id, level }, res) => {
@@ -146,16 +146,16 @@ userUtils.setLevelById = async ({ id, level }, res) => {
 
     if (!user) {
       return null;
-    } else {
-      await user.update({ level }); 
+    }
 
-      return level;
-    };
+    await user.update({ level });
+
+    return level;
   } catch (err) {
     logger.error(`[USER-setLevelById] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 userUtils.setLevelByEmail = async ({ email, level }, res) => {
@@ -164,16 +164,16 @@ userUtils.setLevelByEmail = async ({ email, level }, res) => {
 
     if (!user) {
       return null;
-    } else {
-      await user.update({ level }); 
+    }
 
-      return level;
-    };
+    await user.update({ level });
+
+    return level;
   } catch (err) {
     logger.error(`[USER-setLevelByEmail] ${err}`);
 
     return response.sendInternalError(res);
-  };
+  }
 };
 
 module.exports = userUtils;

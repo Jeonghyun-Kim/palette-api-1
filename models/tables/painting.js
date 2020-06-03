@@ -2,50 +2,50 @@ module.exports = (sequelize, DataTypes) => {
   const painting = sequelize.define('Painting', {
     painter: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING(100),
-      allowNull: false
+      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
     },
     material: {
       type: DataTypes.STRING(100),
-      allowNull: true
+      allowNull: true,
     },
     width: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true
+      allowNull: true,
     },
     height: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true
+      allowNull: true,
     },
     price: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true
+      allowNull: true,
     },
     onSale: {
       type: DataTypes.BOOLEAN,
-      allowNull: true
+      allowNull: true,
     },
     numLikes: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
     },
     numImages: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      defaultValue: 1
+      defaultValue: 1,
     },
     thumbnailUrl: {
       type: DataTypes.STRING(100),
-      allowNull: false
-    }
+      allowNull: false,
+    },
   }, {
     tableName: 'painting',
     freezeTableName: true,
@@ -54,11 +54,13 @@ module.exports = (sequelize, DataTypes) => {
     charset: 'utf8',
     collate: 'utf8_general_ci',
     hooks: {
-      afterDestroy: (instance, _options) => {
-        instance.getImages().then(images => images.forEach(image => image.destrory()));
+      afterDestroy: (instance) => {
+        instance.getImages()
+          .then((images) => images.forEach((image) => image.destrory()));
       },
-      afterRestore: (instance, _options) => {
-        instance.getImages({ paranoid: false }).then(images => images.forEach(image => image.restore()));
+      afterRestore: (instance) => {
+        instance.getImages({ paranoid: false })
+          .then((images) => images.forEach((image) => image.restore()));
       },
     },
   });

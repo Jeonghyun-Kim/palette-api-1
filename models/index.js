@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
-
 const config = require('../config/db_config')[process.env.NONE_ENV || 'development'];
+
 const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
@@ -40,12 +40,12 @@ db.Collection.belongsToMany(db.Painting, { as: 'Paintings', through: 'collection
 db.Painting.belongsToMany(db.Collection, { as: 'Collections', through: 'collectionPaintings', foreignKey: 'fkPaintingId' });
 
 db.User.belongsToMany(db.Collection, { as: 'LikedCollections', through: 'collectionLike', foreignKey: 'fkUserId' });
-db.Collection.belongsToMany(db.User, { as: 'LikedUsers', through: 'collectionLike', foreignKey: 'fkCollectionId'});
+db.Collection.belongsToMany(db.User, { as: 'LikedUsers', through: 'collectionLike', foreignKey: 'fkCollectionId' });
 
 db.User.belongsToMany(db.Collection, { as: 'AskedCollections', through: 'askBoard', foreignKey: 'fkUserId' });
-db.Collection.belongsToMany(db.User, { as: 'AsKedUsers', through: 'askBoard', foreignKey: 'fkCollectionId'});
+db.Collection.belongsToMany(db.User, { as: 'AsKedUsers', through: 'askBoard', foreignKey: 'fkCollectionId' });
 
 db.User.belongsToMany(db.Gallery, { as: 'Followings', through: 'galleryFollow', foreignKey: 'fkUserId' });
-db.Gallery.belongsToMany(db.User, { as: 'Followers', through: 'galleryFollow', foreignKey: 'fkGalleryId'});
+db.Gallery.belongsToMany(db.User, { as: 'Followers', through: 'galleryFollow', foreignKey: 'fkGalleryId' });
 
 module.exports = db;

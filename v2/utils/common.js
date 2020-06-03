@@ -10,21 +10,18 @@ const response = {};
 const token = {};
 const mailer = {};
 
-response.sendInternalError = (res) => {
-  return res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: DB_STATUS_CODE.COMMON_ERROR });
-};
+response.sendInternalError = (res) => res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR)
+  .json({ error: DB_STATUS_CODE.COMMON_ERROR });
 
-token.create = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn });
-};
+token.create = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn });
 
-token.decodeId = (accessToken) => {
+token.decodeId = (accessToken, res) => {
   const { id } = jwt.decode(accessToken);
   if (id) {
     return id;
-  } else {
-    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
-  };
+  }
+
+  return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
 };
 
 token.verify = (accessToken, res) => {
@@ -35,13 +32,14 @@ token.verify = (accessToken, res) => {
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return { error: DB_STATUS_CODE.TOKEN_EXPIRED };
-    };
-    
+    }
+
     return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
-  };
+  }
 };
 
 mailer.config = require('../../config/mailer_config');
+
 mailer.transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
@@ -73,7 +71,7 @@ mailer.sendVerificationEmail = (user) => {
   mailer.transporter.sendMail(mailOptions, (error) => {
     if (error) {
       logger.error(`[MAILER] ${error}`);
-    };
+    }
   });
 };
 
