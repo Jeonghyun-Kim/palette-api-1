@@ -50,7 +50,7 @@ router.post('/login', async (req, res, next) => {
 
     if (exUser.password === sha256(password)) {
       const accessToken = token.create(exUser.id);
-      const refreshToken = (await exUser.getRefreshToken()).value;
+      const refreshToken = (await exUser.getToken()).value;
 
       return res.status(HTTP_STATUS_CODE.OK).json({ accessToken, refreshToken });
     };
@@ -92,7 +92,7 @@ router.post('/token', async (req, res, next) => {
   try {
     const user = await userUtils.findById(id, res);
   
-    if (refreshToken !== (await user.getRefreshToken()).value) {
+    if (refreshToken !== (await user.getToken()).value) {
       return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
     };
   
