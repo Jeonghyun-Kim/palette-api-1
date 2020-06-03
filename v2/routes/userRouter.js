@@ -10,7 +10,7 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 router.use(jsonParser);
 
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', verifyToken, async (req, res, next) => {
   try {
     const user = await userUtils.findById(req.id, res);
     
@@ -22,7 +22,7 @@ router.get('/', verifyToken, async (req, res) => {
   };
 });
 
-router.put('/', verifyToken, async (req, res) => {
+router.put('/', verifyToken, async (req, res, next) => {
   const  { nick, name, gender } = req.body;
   // TODO: INPUT VALIDATION
 
@@ -41,7 +41,7 @@ router.put('/', verifyToken, async (req, res) => {
   };
 });
 
-router.delete('/', verifyToken, async (req, res) => {
+router.delete('/', verifyToken, async (req, res, next) => {
   try {
     if (await userUtils.deleteById(req.id, res)) {
       return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
@@ -53,7 +53,7 @@ router.delete('/', verifyToken, async (req, res) => {
   };
 });
 
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', verifyToken, async (req, res, next) => {
   try {
     const user = await userUtils.findById(req.params.id, res);
 
@@ -69,7 +69,7 @@ router.get('/:id', verifyToken, async (req, res) => {
   };
 });
 
-router.put('/password', verifyToken, async (req, res) => {
+router.put('/password', verifyToken, async (req, res, next) => {
   const { password, newPassword } = req.body;
   if (!password || !newPassword) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });

@@ -10,13 +10,17 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 router.use(jsonParser);
 
-router.post('/join', async (req, res) => {
+router.post('/join', async (req, res, next) => {
   const { nick, name, email, password, gender } = req.body;
   // TODO: INPUT VALIDATION
 
   try {
     if (await userUtils.findByEmail(email, res)) {
       return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.EMAIL_ALREADY_OCCUPIED });
+    };
+
+    if (await userUtils.findByNick(nick, res)) {
+      return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE).json({ error: DB_STATUS_CODE.USERNAME_ALREADY_OCCUPIED });
     };
   
     const { accessToken, refreshToken } = await userUtils.create({
@@ -33,7 +37,7 @@ router.post('/join', async (req, res) => {
   };
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
   // TODO: INPUT VALIDATION
 
@@ -57,7 +61,7 @@ router.post('/login', async (req, res) => {
   };
 });
 
-router.get('/verify/:token', async (req, res) => {
+router.get('/verify/:token', async (req, res, next) => {
   const { error, id } = token.verify(req.params.token, res);
   try {
     if (error) {
@@ -75,7 +79,7 @@ router.get('/verify/:token', async (req, res) => {
   };
 });
 
-router.post('/token', async (req, res) => {
+router.post('/token', async (req, res, next) => {
   const { refreshToken } = req.body;
   
   if (!refreshToken) {
@@ -100,7 +104,7 @@ router.post('/token', async (req, res) => {
   };
 });
 
-router.get('/test', verifyToken, (_req, res) => {
+router.get('/test', verifyToken, (_req, res, next) => {
   return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
 });
 

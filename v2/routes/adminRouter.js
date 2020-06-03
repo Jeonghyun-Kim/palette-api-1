@@ -7,7 +7,7 @@ const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
 router.use(jsonParser);
 
-router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
+router.put('/level/id', verifyToken, checkAdmin, async (req, res, next) => {
   const { id, level } = req.body;
   //TODO: INPUT VALIDATION
 
@@ -28,7 +28,7 @@ router.put('/level/id', verifyToken, checkAdmin, async (req, res) => {
   };
 });
 
-router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
+router.put('/level/email', verifyToken, checkAdmin, async (req, res, next) => {
   const { email, level } = req.body;
   //TODO: INPUT VALIDATION
 
@@ -49,7 +49,7 @@ router.put('/level/email', verifyToken, checkAdmin, async (req, res) => {
   };
 });
 
-router.put('/level/nick', verifyToken, checkAdmin, async (req, res) => {
+router.put('/level/nick', verifyToken, checkAdmin, async (req, res, next) => {
   const { nick, level } = req.body;
   //TODO: INPUT VALIDATION
 
@@ -70,7 +70,7 @@ router.put('/level/nick', verifyToken, checkAdmin, async (req, res) => {
   };
 });
 
-router.delete('/user/:id', verifyToken, checkAdmin, async (req, res) => {
+router.delete('/user/:id', verifyToken, checkAdmin, async (req, res, next) => {
   try {
     if (await userUtils.deleteById(req.params.id, res)) {
       return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
