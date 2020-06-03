@@ -7,7 +7,9 @@ module.exports = {
     database: 'test_db_dev',
     host: process.env.DB_HOST_DEV,
     dialect: 'mariadb',
-    timezone: '+09:00',
+    dialectOptions: {
+      timezone: process.env.DB_TIMEZONE,
+    },
   },
   production: {
     username: process.env.DB_USERNAME,
@@ -15,7 +17,9 @@ module.exports = {
     database: 'test_db_dev',
     host: process.env.DB_HOST_PRO,
     dialect: 'mariadb',
-    timezone: '+09:00',
+    dialectOptions: {
+      timezone: process.env.DB_TIMEZONE,
+    },
     logging: false,
   },
 };
