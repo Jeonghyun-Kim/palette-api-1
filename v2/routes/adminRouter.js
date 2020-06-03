@@ -98,7 +98,17 @@ router.delete('/user/:id', verifyToken, checkAdmin, async (req, res, next) => {
 });
 
 router.post('/gallery', verifyToken, checkAdmin, upload.single('profile'), async (req, res, next) => {
-  const { name, address = '', tel, mobile, profileMsg = '' } = req.body;
+  const { managerEmail, name, address = '', tel, mobile, profileMsg = '' } = req.body;
+  if (!managerEmail) {
+    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.BAD_REQUEST });
+  }
+
+  const manager = await userUtils.findByEmail(managerEmail, res);
+
+  if (!manager) {
+    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
+  }
+
   if (!name && !tel && !mobile) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST)
       .json({ error: DB_STATUS_CODE.GALLERY_FAIL_VALIDATION });
@@ -116,7 +126,9 @@ router.post('/gallery', verifyToken, checkAdmin, upload.single('profile'), async
       name, address, tel, mobile, profileMsg, profileUrl,
     }, res);
 
-    return res.status(HTTP_STATUS_CODE.CREATED).json({ id });
+    manager.fkGalleryId = id;
+
+    return res.status(HTTP_STATUS_CODE.CREATED).json({ galleryId: id, manager });
   } catch (err) {
     return next(err);
   }
