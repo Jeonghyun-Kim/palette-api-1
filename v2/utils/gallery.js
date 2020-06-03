@@ -56,4 +56,22 @@ galleryUtils.uploadProfilePic = async (id, { profileUrl }, res) => {
   }
 };
 
+galleryUtils.delete = async (id, res) => {
+  try {
+    const gallery = await galleryUtils.findOne(id, res);
+
+    if (!gallery) {
+      return false;
+    }
+
+    await gallery.destroy();
+
+    return true;
+  } catch (err) {
+    logger.error(`[GALLERY-delete] ${err}`);
+
+    return response.sendInternalError(res);
+  }
+};
+
 module.exports = galleryUtils;

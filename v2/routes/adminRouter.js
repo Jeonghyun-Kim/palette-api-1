@@ -134,4 +134,16 @@ router.post('/gallery', verifyToken, checkAdmin, upload.single('profile'), async
   }
 });
 
+router.delete('/gallery/:id', verifyToken, checkAdmin, async (req, res, next) => {
+  try {
+    if (await galleryUtils.delete(req.params.id, res)) {
+      return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
+    }
+
+    return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: DB_STATUS_CODE.NO_SUCH_GALLERY });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;
