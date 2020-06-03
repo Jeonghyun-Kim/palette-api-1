@@ -101,7 +101,7 @@ router.post('/gallery', verifyToken, checkAdmin, upload.single('profile'), async
   const { name, address = '', tel, mobile, profileMsg = '' } = req.body;
   if (!name && !tel && !mobile) {
     return res.status(HTTP_STATUS_CODE.BAD_REQUEST)
-      .json({ error: DB_STATUS_CODE.GALLERY_BAD_REQUEST });
+      .json({ error: DB_STATUS_CODE.GALLERY_FAIL_VALIDATION });
   }
   // TODO: Input Validation
   try {

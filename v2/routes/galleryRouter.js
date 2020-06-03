@@ -51,6 +51,11 @@ router.get('/', verifyToken, async (req, res, next) => {
 router.get('/:id', verifyToken, async (req, res, next) => {
   try {
     const gallery = await galleryUtils.findOne(req.params.id, res);
+
+    if (!gallery) {
+      return res.status(HTTP_STATUS_CODE.BAD_REQUEST)
+        .json({ error: DB_STATUS_CODE.NO_SUCH_GALLERY });
+    }
     const paintings = await galleryUtils.getPaintings();
     const collections = await galleryUtils.getCollections();
 
