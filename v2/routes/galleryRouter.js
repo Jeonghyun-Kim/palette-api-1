@@ -1,23 +1,23 @@
 const express = require('express');
-// const sha256 = require('sha256');
-// const { uuid } = require('uuidv4');
+const sha256 = require('sha256');
+const { uuid } = require('uuidv4');
 const jsonParser = require('body-parser').json();
-// const path = require('path');
-// const multer = require('multer');
+const path = require('path');
+const multer = require('multer');
 
-// const { response, uploadS3 } = require('../utils/common');
+const { response, uploadS3 } = require('../utils/common');
 const userUtils = require('../utils/user');
 const galleryUtils = require('../utils/gallery');
 const { verifyToken } = require('../middlewares');
-// const { BUCKETS } = require('../aws_defines');
+const { BUCKETS } = require('../aws_defines');
 const { HTTP_STATUS_CODE, DB_STATUS_CODE } = require('../../status_code');
 
-// const upload = multer({
-//   storage: multer.memoryStorage(),
-//   limits: {
-//     fileSize: 1000,
-//   },
-// });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 1000,
+  },
+});
 
 const router = express.Router();
 router.use(jsonParser);
@@ -53,6 +53,30 @@ router.get('/all', verifyToken, async (_req, res, next) => {
     const galleries = await galleryUtils.findAll(res);
 
     return res.status(HTTP_STATUS_CODE.OK).json({ galleries });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.put('/profile', verifyToken, upload.single('profile'), async (req, res, next) => {
+  try {
+    const manager = await userUtils.findById(req.id, res);
+
+    if (!manager.fkGalleryId) {
+      return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({ error: DB_STATUS_CODE.UNAUTHORIZED });
+    }
+
+    const profileUrl = `${sha256(uuid())}${path.extname(req.file.originalname)}`;
+    if (!await uploadS3(BUCKETS.PROFILE, profileUrl, req.file.buffer)) {
+      return response.sendInternalError(res);
+    }
+
+    if (await galleryUtils.uploadProfilePic(manager.fkGalleryId, { profileUrl }, res)) {
+      return res.status(HTTP_STATUS_CODE.OK).json({ error: 0 });
+    }
+
+    return res.status(HTTP_STATUS_CODE.NOT_ACCEPTABLE)
+      .json({ error: DB_STATUS_CODE.GALLERY_DESTROYED });
   } catch (err) {
     return next(err);
   }
