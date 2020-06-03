@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'refreshToken',
     freezeTableName: true,
     timestamps: true,
-    paranoid: true,
+    // paranoid: true,
     charset: 'utf8',
     collate: 'utf8_general_ci',
   });

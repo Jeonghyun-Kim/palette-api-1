@@ -41,17 +41,17 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'user',
     freezeTableName: true,
     timestamps: true,
-    paranoid: true,
+    // paranoid: true,
     charset: 'utf8',
     collate: 'utf8_general_ci',
-    hooks: {
-      afterDestroy: (instance, _options) => {
-        instance.getToken().then(token => token.destroy());
-      },
-      afterRestore: (instance, _options) => {
-        instance.getToken({ paranoid: false }).then(token => token.restore());
-      },
-    },
+    // hooks: {
+    //   afterDestroy: (instance, _options) => {
+    //     instance.getToken().then(token => token.destroy());
+    //   },
+    //   afterRestore: (instance, _options) => {
+    //     instance.getToken({ paranoid: false }).then(token => token.restore());
+    //   },
+    // },
   });
 
   return user;
