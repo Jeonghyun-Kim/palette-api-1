@@ -7,11 +7,9 @@ const { mailer, token, response } = require('./common');
 
 const userUtils = {};
 
-userUtils.findById = async (id, res, attr = {}) => {
+userUtils.findById = async (id, res) => {
   try {
-    const attributes = attr;
-    attributes.exclude = ['password'];
-    const user = await db.User.findOne({ where: { id }, attributes });
+    const user = await db.User.findOne({ where: { id }, attributes: { exclude: ['password'] } });
 
     return user;
   } catch (err) {
@@ -21,11 +19,9 @@ userUtils.findById = async (id, res, attr = {}) => {
   }
 };
 
-userUtils.findByEmail = async (email, res, attr = {}) => {
+userUtils.findByEmail = async (email, res) => {
   try {
-    const attributes = attr;
-    attributes.exclude = ['password'];
-    const user = await db.User.findOne({ where: { email }, attributes });
+    const user = await db.User.findOne({ where: { email }, attributes: { exclude: ['password'] } });
 
     return user;
   } catch (err) {
@@ -35,11 +31,9 @@ userUtils.findByEmail = async (email, res, attr = {}) => {
   }
 };
 
-userUtils.findByNick = async (nick, res, attr = {}) => {
+userUtils.findByNick = async (nick, res) => {
   try {
-    const attributes = attr;
-    attributes.exclude = ['password'];
-    const user = await db.User.findOne({ where: { nick }, attributes });
+    const user = await db.User.findOne({ where: { nick }, attributes: { exclude: ['password'] } });
 
     return user;
   } catch (err) {
