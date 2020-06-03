@@ -32,8 +32,8 @@ router.get('/', verifyToken, async (req, res, next) => {
         .json({ error: DB_STATUS_CODE.NOT_GALLERY_MANAGER });
     }
     const gallery = await galleryUtils.findOne(id, res);
-    const paintings = await galleryUtils.getPaintings();
-    const collections = await galleryUtils.getCollections();
+    const paintings = await gallery.getPaintings();
+    const collections = await gallery.getCollections();
 
     const { name, address, tel, mobile, profileUrl, profileMsg } = gallery;
 
@@ -56,8 +56,8 @@ router.get('/:id', verifyToken, async (req, res, next) => {
       return res.status(HTTP_STATUS_CODE.BAD_REQUEST)
         .json({ error: DB_STATUS_CODE.NO_SUCH_GALLERY });
     }
-    const paintings = await galleryUtils.getPaintings();
-    const collections = await galleryUtils.getCollections();
+    const paintings = await gallery.getPaintings();
+    const collections = await gallery.getCollections();
 
     const { name, address, tel, mobile, profileUrl, profileMsg } = gallery;
 
