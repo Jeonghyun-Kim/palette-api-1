@@ -84,7 +84,7 @@ router.put('/password', verifyToken, async (req, res, next) => {
   }
 
   try {
-    const user = await userUtils.findById(req.id, res);
+    const user = await userUtils.findById(req.id, res, 1);
 
     if (user.password !== sha256(password)) {
       return res.status(HTTP_STATUS_CODE.UNAUTHORIZED)

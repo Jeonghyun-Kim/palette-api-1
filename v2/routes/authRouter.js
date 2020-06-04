@@ -43,7 +43,7 @@ router.post('/login', async (req, res, next) => {
   // TODO: INPUT VALIDATION
 
   try {
-    const exUser = await userUtils.findByEmail(email, res);
+    const exUser = await userUtils.findByEmail(email, res, true);
 
     if (!exUser) {
       return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ error: DB_STATUS_CODE.NO_SUCH_USER });
