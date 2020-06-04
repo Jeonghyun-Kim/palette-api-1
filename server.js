@@ -3,6 +3,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const CUSTOM = ':remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
 const logger = require('./config/winston_config');
@@ -19,6 +20,7 @@ sequelize.sync();
 app.set('port', process.env.PORT || 8081);
 
 app.use(cors());
+app.use(helmet());
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan(CUSTOM, { stream: { write: (message) => logger.info(message) } }));
