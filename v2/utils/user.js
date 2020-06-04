@@ -9,7 +9,7 @@ const userUtils = {};
 
 userUtils.findById = async (id, res, needPassword) => {
   try {
-    const user = await db.User.findOne({ where: { id }, attributes: needPassword ? { exclude: ['password'] } : {} });
+    const user = await db.User.findOne({ where: { id }, attributes: needPassword ? {} : { exclude: ['password'] } });
 
     return user;
   } catch (err) {
@@ -21,7 +21,7 @@ userUtils.findById = async (id, res, needPassword) => {
 
 userUtils.findByEmail = async (email, res, needPassword) => {
   try {
-    const user = await db.User.findOne({ where: { email }, attributes: needPassword ? { exclude: ['password'] } : {} });
+    const user = await db.User.findOne({ where: { email }, attributes: needPassword ? {} : { exclude: ['password'] } });
 
     return user;
   } catch (err) {
@@ -33,7 +33,7 @@ userUtils.findByEmail = async (email, res, needPassword) => {
 
 userUtils.findByNick = async (nick, res, needPassword) => {
   try {
-    const user = await db.User.findOne({ where: { nick }, attributes: needPassword ? { exclude: ['password'] } : {} });
+    const user = await db.User.findOne({ where: { nick }, attributes: needPassword ? {} : { exclude: ['password'] } });
 
     return user;
   } catch (err) {
